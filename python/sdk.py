@@ -4,7 +4,7 @@ from prices import OctopusAgilePricesClient, Price
 from typing import Callable, Optional
 
 
-class AgileActionsSDK:
+class DomesticTariffSchedulerSDK:
     """
     Current tariff support:
     - [Octopus Agile](https://octopus.energy/smart/agile/)
