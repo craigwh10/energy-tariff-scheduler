@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 import json
 sys.path.append('../../') 
 
-hill_valley_tz = ZoneInfo("Europe/London")
+london_tz = ZoneInfo("Europe/London")
 
 from python.prices import OctopusAgilePricesClient
 
@@ -39,7 +39,7 @@ class TestOctopusAgilePricesClient:
         with pytest.raises(Exception, match="No data returned from the Octopus API so can't generate schedule, try running this again in a few minutes."):
             client.get_today()
 
-    @time_machine.travel(datetime(2023, 3, 26, 0, 24, tzinfo=timezone.utc))
+    @time_machine.travel(datetime(2023, 3, 26, 0, 24, tzinfo=london_tz))
     def test_not_correct_length_from_api(self, mocker):
         mock_response = Mock()
         mock_response.status_code = 200
@@ -54,7 +54,7 @@ class TestOctopusAgilePricesClient:
 
         assert spy.call_count == 3
 
-    @time_machine.travel(datetime(1985, 10, 26, 0, 24, tzinfo=timezone.utc))
+    @time_machine.travel(datetime(1985, 10, 26, 0, 24, tzinfo=london_tz))
     def test_happy_path(self, mocker):
         mock_response = Mock()
         mock_response.status_code = 200
