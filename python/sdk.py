@@ -17,7 +17,7 @@ class AgileActionsSDK:
             pricing_strategy: Optional[PricingStrategy] = None
         ):
         """
-        Runs a schedule based on the Octopus Agile tariff.
+        Runs a schedule with half hourly jobs based on the Octopus Agile tariff prices.
         
         Args:
             prices_to_include (int | Callable[[list[Price]], int]): The number of prices to include or a callable
@@ -25,9 +25,6 @@ class AgileActionsSDK:
             action_when_cheap (Callable[[Optional[Price]], None]): Action to execute when the price is considered cheap.
             action_when_expensive (Callable[[Optional[Price]], None]): Action to execute when the price is considered expensive.
             pricing_strategy (Optional[PricingStrategy]): Custom pricing strategy to handle the prices.
-
-        Returns:
-            OctopusAgileScheduleProvider: The schedule provider instance configured with the given settings.
         """
 
         schedule = OctopusAgileScheduleProvider(
