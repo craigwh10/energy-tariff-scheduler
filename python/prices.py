@@ -19,8 +19,7 @@ class OctopusAgilePricesClient(PricesClient):
         """
         What this does
         ---
-        - Gets current price as well as price 30 minutes before
-        - Returns data with the most recent price being first
+        - Gets todays data, in utc time order
 
         Example response
         ---
