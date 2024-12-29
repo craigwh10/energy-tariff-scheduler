@@ -20,6 +20,7 @@ class OctopusAgilePricesClient(PricesClient):
         What this does
         ---
         - Gets todays data, in utc time order
+        - Todays data is made available between 4-8pm the day before
 
         Example response
         ---
@@ -49,14 +50,23 @@ class OctopusAgilePricesClient(PricesClient):
 
         logging.info(f"Getting price data from {date_from} to {date_to}")
 
-        # TODO: Add a warning here that if you run it earlier later than 1am then it will produce less output
+        # If the time is after 1am, then the data includes historical prices
+        if (today_date.hour > 1):
+            logging.warning("data includes historical prices, these wont be included in todays run.")
 
         data = requests.get(
             f"https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/standard-unit-rates/?period_from={date_from}&period_to={date_to}"
         )
-
-        # TODO: Add error handling here, and validation of correct length of final result
+        
         logging.debug("Price data", data.json())
+
+        if data.json()["results"] == None:
+            raise Exception("No data returned from the Octopus API so can't generate schedule, try running this again in a few minutes.")
+
+        if len(data.json()["results"]) != 46:
+            logging.warning("Data is incomplete, not all usual half hourly periods are included")
+            logging.warning("This is likely a problem with the Octopus API, try running this again in a few minutes")
+            logging.warning("If you believe this isn't an issue with the API then raise an issue here https://github.com/craigwh10/domestic-tariff-scheduler-sdk/issues/new.")
 
         return [Price(
             price=float(hh_period["value_inc_vat"]),

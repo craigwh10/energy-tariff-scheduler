@@ -30,7 +30,7 @@ class AgileActionsSDK:
             OctopusAgileScheduleProvider: The schedule provider instance configured with the given settings.
         """
 
-        OctopusAgileScheduleProvider(
+        schedule = OctopusAgileScheduleProvider(
             prices_client=OctopusAgilePricesClient(),
             config=ScheduleConfig(
                 prices_to_include,
@@ -39,3 +39,5 @@ class AgileActionsSDK:
                 pricing_strategy
             )
         )
+
+        schedule.run()
