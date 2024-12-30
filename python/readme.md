@@ -6,7 +6,7 @@ pip install domestic-tariff-scheduler-sdk
 
 ## Supported tariff's (so far)
 
-- [Octopus Agile](https://octopus.energy/smart/agile/)
+- <a href="https://octopus.energy/smart/agile/)" target="_blank">Octopus Agile</a>
 
 ## The code
 
