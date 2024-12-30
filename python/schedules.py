@@ -35,6 +35,11 @@ class ScheduleConfig(BaseModel):
     _pricing_strategy: Optional[PricingStrategy] = None
 
     def add_custom_pricing_strategy(self, pricing_strategy: Type[PricingStrategy]):
+        """
+        Adds a custom pricing strategy to the configuration.
+        You pass in a class, not an instance as the config is injected later.
+        ```
+        """
         # it's done this way to allow for the custom strategy to access the config
         if not issubclass(pricing_strategy, PricingStrategy):
             raise Exception(f"The custom pricing strategy {pricing_strategy.__name__} must inherit from PricingStrategy\nException fix: use 'from schedules import PricingStrategy' and 'class {pricing_strategy.__name__}(PricingStrategy):'")
