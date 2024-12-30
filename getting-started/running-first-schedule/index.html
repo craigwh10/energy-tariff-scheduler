@@ -483,7 +483,7 @@
 <li><code>run_continously</code> boolean flag of whether you just want the schedules to run once or continously regenerating a new schedule at 00:00am the next day</li>
 </ul>
 <h2 id="when-does-this-run">When does this run?</h2>
-<p>You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then this will run continously and generate a new schedule at 00:00 the next day.</p>
+<p>You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then if you have <code>run_continously</code> as true then it will keep running, otherwise it will stop.</p>
 <h2 id="setting-up-actions">Setting up actions</h2>
 <p>In the SDK we have two available methods that you need to set, <code>action_when_cheap</code> and <code>action_when_expensive</code>, see below a simple example of how this is set up.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># main.py</span>
