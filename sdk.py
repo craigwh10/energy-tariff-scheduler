@@ -109,13 +109,16 @@ def run_octopus_agile_tariff_schedule(
             schedule.run_pending()
             time.sleep(1)
 
-    if not run_continously == True:
+    if run_continously == False:
        run_new_schedule()
+       ran_00_check = False
        while True:
         jobs = schedule.get_jobs()
 
         logging.info(f"Jobs {len(jobs)}")
-        handle_running_at_exactly00()
+        if not ran_00_check:
+            handle_running_at_exactly00()
+        ran_00_check = True
 
         schedule.run_pending()
         time.sleep(1)

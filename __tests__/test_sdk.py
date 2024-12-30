@@ -4,6 +4,7 @@ import time_machine
 import time
 import threading
 import json
+import pytest
 from datetime import datetime
 
 from zoneinfo import ZoneInfo
@@ -26,12 +27,14 @@ class TestIntegrationRunOctopusAgileTariffSchedule:
             action_when_expensive = Mock()
 
             def run_schedule():
-                run_octopus_agile_tariff_schedule(
-                    prices_to_include=5,
-                    action_when_cheap=action_when_cheap,
-                    action_when_expensive=action_when_expensive,
-                    run_continously=False  # Enable continuous running for the loop
-                )
+                with pytest.raises(SystemExit) as excinfo:
+                    run_octopus_agile_tariff_schedule(
+                        prices_to_include=5,
+                        action_when_cheap=action_when_cheap,
+                        action_when_expensive=action_when_expensive,
+                        run_continously=False  # Enable continuous running for the loop
+                    )
+                    assert excinfo.value.code == 1
 
             # Start the run in a separate thread
             schedule_thread = threading.Thread(target=run_schedule, daemon=True)
@@ -43,5 +46,4 @@ class TestIntegrationRunOctopusAgileTariffSchedule:
                     time.sleep(1)
 
             schedule_thread.join(timeout=1)
-
             assert action_when_cheap.call_count == 5
