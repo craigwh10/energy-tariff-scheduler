@@ -24,7 +24,17 @@ class PricingStrategy(ABC):
     """
     @abstractmethod
     def handle_price(self, price: Price, position: int, prices: list[Price]):
-        """Define what to do when a price is considered cheap."""
+        """
+        Define what to do when a price is considered cheap or expensive.
+        
+        Example
+        ```python
+        if price.value < 10 and position < 5:
+            self.config.action_when_cheap(price)
+        else:
+            self.config.action_when_expensive(price)
+        ```
+        """
         pass
 
 class ScheduleConfig(BaseModel):
