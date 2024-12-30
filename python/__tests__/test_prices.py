@@ -3,10 +3,11 @@ from unittest.mock import Mock
 
 import logging
 from datetime import datetime, timezone
-import sys
 import time_machine
 from zoneinfo import ZoneInfo
 import json
+import sys
+
 sys.path.append('../../') 
 
 london_tz = ZoneInfo("Europe/London")

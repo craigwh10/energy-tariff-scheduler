@@ -42,7 +42,8 @@ class ScheduleConfig(BaseModel):
         try:
             instance = pricing_strategy(self)
             # accessing this will raise if it's not implemented
-            # it doesn't need a raise within the method, it's ABC behaviour.
+            # it doesn't need a raise NotImplemented within the method, ABC throws by default if
+            # it's not implemented as TypeError
             instance.handle_price  
         except TypeError:
             raise Exception("The 'handle_price' method must be implemented in the custom pricing strategy")
