@@ -3,3 +3,4 @@ requests==2.32.3
 schedule==1.2.2
 time-machine==2.16.0
 pytest-mock==3.14.0
+python-dateutil==2.9.0.post0
