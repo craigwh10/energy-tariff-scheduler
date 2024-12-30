@@ -12,7 +12,7 @@
 
 ## When does this run?
 
-You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then this will run continously and generate a new schedule at 00:00 the next day.
+You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then if you have `run_continously` as true then it will keep running, otherwise it will stop.
 
 ## Setting up actions
 
