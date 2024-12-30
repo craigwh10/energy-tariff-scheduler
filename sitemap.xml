@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://mydomain.org/</loc>
+         <lastmod>2024-12-30</lastmod>
+    </url>
+    <url>
+         <loc>https://mydomain.org/getting-started/custom-prices-to-include/</loc>
+         <lastmod>2024-12-30</lastmod>
+    </url>
+    <url>
+         <loc>https://mydomain.org/getting-started/custom-pricing-strategies/</loc>
+         <lastmod>2024-12-30</lastmod>
+    </url>
+    <url>
+         <loc>https://mydomain.org/getting-started/installation/</loc>
+         <lastmod>2024-12-30</lastmod>
+    </url>
+    <url>
+         <loc>https://mydomain.org/getting-started/running-first-schedule/</loc>
+         <lastmod>2024-12-30</lastmod>
+    </url>
+</urlset>
