@@ -2,6 +2,10 @@ from schedules import OctopusAgileScheduleProvider, ScheduleConfig, PricingStrat
 from prices import OctopusAgilePricesClient, Price
 
 from typing import Callable, Optional, Type
+import time
+from datetime import datetime, timezone
+
+import schedule
 
 """
 Current tariff support:
@@ -12,7 +16,8 @@ def run_octopus_agile_tariff_schedule(
         prices_to_include: int | Callable[[list[Price]], int],
         action_when_cheap: Callable[[Optional[Price]], None],
         action_when_expensive: Callable[[Optional[Price]], None],
-        pricing_strategy: Optional[Type[PricingStrategy]] = None
+        pricing_strategy: Optional[Type[PricingStrategy]] = None,
+        run_continously: bool = True
     ):
     """
     Runs a schedule with half hourly jobs based on the Octopus Agile tariff prices.
@@ -63,13 +68,27 @@ def run_octopus_agile_tariff_schedule(
     ```
     """
 
-    schedule = OctopusAgileScheduleProvider(
-        prices_client=OctopusAgilePricesClient(),
-        config=ScheduleConfig(
-            prices_to_include,
-            action_when_cheap,
-            action_when_expensive,
-        ).add_custom_pricing_strategy(pricing_strategy)
-    )
+    def run_new_schedule():
+        return OctopusAgileScheduleProvider(
+            prices_client=OctopusAgilePricesClient(),
+            config=ScheduleConfig(
+                prices_to_include,
+                action_when_cheap,
+                action_when_expensive,
+            ).add_custom_pricing_strategy(pricing_strategy)
+        ).run()
 
-    schedule.run()
+    if run_continously:
+        if not datetime.now(tz=timezone.utc).hour == 0:
+            run_new_schedule()
+
+        schedule.every().day.at("00:00").do(run_new_schedule)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+
+    if not run_continously:
+        # only runs 
+        return run_new_schedule()
+
+    

@@ -3,11 +3,16 @@
 ## Configuration
 
 - `prices_to_include` is the number of the cheapest half hourly periods that you want to include
-  - this can be a function (as defined in [custom prices to include](./custom-prices-to-include.md))
-  - or simply just an integer value between `0` and `46` ( a full day 0:00-23:00)
+    * this can be a function (as defined in [custom prices to include](./custom-prices-to-include.md))
+    * or simply just an integer value between `0` and `46` ( a full day 0:00-23:00)
 - `action_when_cheap` is your function that is called when the half hourly period is among the cheapest
 - `action_when_expensive` is your function that is called when the half hourly period is more expensive than the cheapest
 - `pricing_strategy` is a custom class you can pass in to act on prices in a more complex way (this is covered in [custom pricing strategies](./custom-pricing-strategies.md))
+- `run_continously` boolean flag of whether you just want the schedules to run once or continously regenerating a new schedule at 00:00am the next day
+
+## When does this run?
+
+You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then this will run continously and generate a new schedule at 00:00 the next day.
 
 ## Setting up actions
 
@@ -48,4 +53,7 @@ INFO Time: 02:00, Action: action_when_expensive, Price: 50p/kWh
 INFO Schedule generated, waiting for jobs to run... 
 ```
 
-Please note that if you have a [custom pricing strategy](./custom-pricing-strategies.md) that the logs wont automatically show, you have to add them yourself as shown in [custom pricing strategy example](./custom-pricing-strategies.md#example-creating-a-custom-pricing-strategy).
+!!! warning
+
+    Please note that if you have a [custom pricing strategy](./custom-pricing-strategies.md) that the logs wont automatically show, you have to add them yourself as shown in [custom pricing strategy example](./custom-pricing-strategies.md#example-creating-a-custom-pricing-strategy).
+

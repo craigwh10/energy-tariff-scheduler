@@ -20,7 +20,8 @@ Additionally I'm going to set up some custom actions which:
 - Send a text message to my phone telling me that my smart plug is being switched on (done via AWS SNS)
 - Send a HTTP RPC request to my shelly on the same WIFI network to start and stop when this conditions are met
 
-It's important to note that in this example, that the custom pricing strategy `CustomPricingStrategy` inherits from `PricingStrategy`, this is necessary otherwise you will hit a validation error to ensure it meets the contract and works with the rest of the code.
+!!! note
+    It's important to note that in this example, that the custom pricing strategy `CustomPricingStrategy`inherits from `PricingStrategy`, this is necessary otherwise you will hit a validation error to ensure it meets the contract and works with the rest of the code.
 
 ```python
 from domestic_tariff_scheduler_sdk import tariff, Price, PricingStrategy, ScheduleConfig
@@ -51,7 +52,7 @@ def switch_shelly_off_and_alert(price: Price):
     SMS.send(f"Price is expensive ({price}p/kWh), turning off shelly")    
     requests.get("http://<shelly_ip>/relay/0?turn=off")
 
-sdk.run_octopus_agile_tariff_schedule(
+tariff.run_octopus_agile_tariff_schedule(
     prices_to_include=5, # 5 opportunties to trigger "action_when_cheap"
     action_when_cheap=switch_shelly_on_and_alert,
     action_when_expensive=switch_shelly_off_and_alert,
