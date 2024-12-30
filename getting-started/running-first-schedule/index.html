@@ -454,9 +454,11 @@
 <h1 id="running-your-first-schedule">Running your first schedule</h1>
 <h2 id="configuration">Configuration</h2>
 <ul>
-<li><code>prices_to_include</code> is the number of the cheapest half hourly periods that you want to include</li>
+<li><code>prices_to_include</code> is the number of the cheapest half hourly periods that you want to include<ul>
 <li>this can be a function (as defined in <a href="../custom-prices-to-include/">custom prices to include</a>)</li>
 <li>or simply just an integer value between <code>0</code> and <code>46</code> ( a full day 0:00-23:00)</li>
+</ul>
+</li>
 <li><code>action_when_cheap</code> is your function that is called when the half hourly period is among the cheapest</li>
 <li><code>action_when_expensive</code> is your function that is called when the half hourly period is more expensive than the cheapest</li>
 <li><code>pricing_strategy</code> is a custom class you can pass in to act on prices in a more complex way (this is covered in <a href="../custom-pricing-strategies/">custom pricing strategies</a>)</li>
@@ -491,7 +493,10 @@
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>...
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>INFO<span class="w"> </span>Schedule<span class="w"> </span>generated,<span class="w"> </span>waiting<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">jobs</span><span class="w"> </span>to<span class="w"> </span>run...<span class="w"> </span>
 </span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <p>Please note that if you have a <a href="../custom-pricing-strategies/">custom pricing strategy</a> that the logs wont automatically show, you have to add them yourself as shown in <a href="../custom-pricing-strategies/#example-creating-a-custom-pricing-strategy">custom pricing strategy example</a>.</p>
+</div>
 
 
 
