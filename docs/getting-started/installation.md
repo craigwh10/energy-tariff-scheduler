@@ -3,7 +3,7 @@
 First check that you have python installed on your machine:
 
 ```sh
-python -v
+python --version
 ```
 
 If you do not then follow [this guide](https://www.python.org/downloads/) or use your preferred manager such as [homebrew](https://docs.brew.sh/Homebrew-and-Python).
