@@ -6,7 +6,7 @@ By default the scheduler will simply just rank the prices and assign them to the
 
 Custom pricing strategies are python classes that you define and pass into the method for the appropriate tariff, in these you can write your own functionality that acts on the prices, this is using a [Strategy pattern](https://refactoring.guru/design-patterns/strategy) which injects in the config in runtime so that you can use the values you addtionally passed in.
 
-For a description of the configuration you can pass in see [configuration](./configuration.md).
+For a description of the configuration you can pass in see [configuration](./running-first-schedule.md#configuration).
 
 ## Example: creating a custom pricing strategy
 
@@ -19,6 +19,8 @@ Additionally I'm going to set up some custom actions which:
 
 - Send a text message to my phone telling me that my smart plug is being switched on (done via AWS SNS)
 - Send a HTTP RPC request to my shelly on the same WIFI network to start and stop when this conditions are met
+
+It's important to note that in this example, that the custom pricing strategy `CustomPricingStrategy` inherits from `PricingStrategy`, this is necessary otherwise you will hit a validation error to ensure it meets the contract and works with the rest of the code.
 
 ```python
 from domestic_tariff_scheduler_sdk import tariff, Price, PricingStrategy, ScheduleConfig
@@ -38,12 +40,14 @@ class CustomPricingStrategy(PricingStrategy):
             self.config.action_when_expensive(price)
 
 def switch_shelly_on_and_alert(price: Price):
-    logging.info(f"Price is cheap: {price}")
+    time = price.datetime_from.strftime("%H:%M")
+    logging.info(f"Time: {time}, Action: action_when_cheap, Price: {price.value}p/kWh")
     SMS.send(f"Price is cheap ({price}p/kWh), turning on shelly")
     requests.get("http://<shelly_ip>/relay/0?turn=on")
 
 def switch_shelly_off_and_alert(price: Price):
-    logging.info(f"Price is expensive: {price}")
+    time = price.datetime_from.strftime("%H:%M")
+    logging.info(f"Time: {time}, Action: action_when_cheap, Price: {price.value}p/kWh")
     SMS.send(f"Price is expensive ({price}p/kWh), turning off shelly")    
     requests.get("http://<shelly_ip>/relay/0?turn=off")
 

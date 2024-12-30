@@ -82,9 +82,14 @@ class DefaultPricingStrategy(PricingStrategy):
         number_of_cheapest_to_include = self._determine_cheapest_to_include(prices)
         logging.debug(f"Price: {price}, Sorted Position: {sorted_position}")
         logging.debug(f"Cheapest to include: {number_of_cheapest_to_include}")
+
+        time = price.datetime_from.strftime("%H:%M")
+
         if (sorted_position <= number_of_cheapest_to_include - 1):
+            logging.info(f"Time: {time}, Action: action_when_cheap, Price: {price.value}p/kWh")
             self.config.action_when_cheap(price)
         if (sorted_position > number_of_cheapest_to_include - 1):
+            logging.info(f"Time: {time}, Action: action_when_expensive, Price: {price.value}p/kWh")
             self.config.action_when_expensive(price)
         
 
@@ -99,9 +104,10 @@ class OctopusAgileScheduleProvider(ScheduleProvider):
         """
         todays_prices = self.prices_client.get_today()
 
+        logging.info(f"Generating schedule for {len(todays_prices)} prices")
         for price in todays_prices:
             if price.datetime_from < datetime.now(timezone.utc):
-                logging.debug(f"Skipping price {price} as it's in the past")
+                logging.warning(f"Skipping price {price} as it's in the past")
                 continue
 
             def job(price: Price):
@@ -124,5 +130,6 @@ class OctopusAgileScheduleProvider(ScheduleProvider):
 
             # TODO: I can forsee people possibly want to do jobs within these half hourly blocks
             #       but this should be a future feature on request.
-            logging.debug(f"Running job at {time_to_run}")
             schedule.every().day.at(time_to_run).do(job_to_run)
+
+        logging.info("Schedule generated, waiting for jobs to run...")

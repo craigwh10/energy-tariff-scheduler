@@ -24,9 +24,9 @@ def action_when_expensive(price: Price)
     print("expensive", price.value)
 
 tariff.run_octopus_agile_tariff_schedule(
-        prices_to_include: 12,
-        action_when_cheap: action_when_cheap,
-        action_when_expensive: action_when_expensive,
+  prices_to_include: 12,
+  action_when_cheap: action_when_cheap,
+  action_when_expensive: action_when_expensive,
 )
 ```
 
@@ -38,11 +38,14 @@ If you now run your script it will stay running and you should see in your logs 
 
 ```sh
 $ python main.py
-INFO Here is your schedule...
-INFO 00:00 action_when_cheap
-INFO 00:30 action_when_cheap
-INFO 01:30 action_when_cheap
-INFO 02:00 action_when_cheap
-INFO 02:30 action_when_expensive
+INFO Generating schedule for 46 prices
+INFO Time: 00:00, Action: action_when_cheap, Price: 4p/kWh
+INFO Time: 00:30, Action: action_when_cheap, Price: 8p/kWh
+INFO Time: 01:00, Action: action_when_cheap, Price: 18p/kWh
+INFO Time: 01:30, Action: action_when_cheap, Price: 12p/kWh
+INFO Time: 02:00, Action: action_when_expensive, Price: 50p/kWh
 ...
+INFO Schedule generated, waiting for jobs to run... 
 ```
+
+Please note that if you have a [custom pricing strategy](./custom-pricing-strategies.md) that the logs wont automatically show, you have to add them yourself as shown in [custom pricing strategy example](./custom-pricing-strategies.md#example-creating-a-custom-pricing-strategy).

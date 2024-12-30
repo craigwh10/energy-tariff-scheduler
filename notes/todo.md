@@ -3,8 +3,9 @@
 As of 30/12/2024
 
 - [ ] Unit tests (ONGOING)
-- [ ] Produce good documentation with usage examples (PRIORITY)
-  - [ ] Look into documentation examples
+- [ ] Make function be shown in schedule log
+- [x] Produce good documentation with usage examples (PRIORITY)
+  - [x] Look into documentation examples
 - [ ] Manually create a changelog
 - [ ] Create github actions for test with coverage check
 - [ ] Publish to pip
