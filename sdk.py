@@ -83,12 +83,17 @@ def run_octopus_agile_tariff_schedule(
             run_new_schedule()
 
         schedule.every().day.at("00:00").do(run_new_schedule)
-        while True:
+        while 1:
             schedule.run_pending()
             time.sleep(1)
 
     if not run_continously:
         # only runs 
-        return run_new_schedule()
+       run_new_schedule()
+       while 1:
+        schedule.run_pending()
+        time.sleep(1)
 
+        if datetime.now(tz=timezone.utc).hour == 0:
+            exit(1)
     
