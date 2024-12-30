@@ -28,7 +28,8 @@ def run_octopus_agile_tariff_schedule(
         action_when_cheap: Action to execute when the price is considered cheap.
         action_when_expensive: Action to execute when the price is considered expensive.
         pricing_strategy: Custom pricing strategy to handle the prices.
-
+        run_continously: Whether to run the schedule continuously (every day) or just once.
+        
     Example Custom Pricing Strategy (Optional - default is just picking the cheapest `prices_to_include` prices):
     ```python
     from custom_sms import SMS
@@ -116,9 +117,9 @@ def run_octopus_agile_tariff_schedule(
         jobs = schedule.get_jobs()
 
         logging.info(f"Jobs {len(jobs)}")
-        if not ran_00_check:
+        if not ran_00_check: # prevent race conditions if check takes longer than 1s
             handle_running_at_exactly00()
-        ran_00_check = True
+        ran_00_check = True 
 
         schedule.run_pending()
         time.sleep(1)
