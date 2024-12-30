@@ -1,9 +1,10 @@
-from schedules import OctopusAgileScheduleProvider, ScheduleConfig, PricingStrategy
+from schedules import DefaultPricingStrategy, OctopusAgileScheduleProvider, ScheduleConfig, PricingStrategy
 from prices import OctopusAgilePricesClient, Price
 
 from typing import Callable, Optional, Type
 import time
 from datetime import datetime, timezone
+import logging
 
 import schedule
 
@@ -16,7 +17,7 @@ def run_octopus_agile_tariff_schedule(
         prices_to_include: int | Callable[[list[Price]], int],
         action_when_cheap: Callable[[Optional[Price]], None],
         action_when_expensive: Callable[[Optional[Price]], None],
-        pricing_strategy: Optional[Type[PricingStrategy]] = None,
+        pricing_strategy: Optional[Type[PricingStrategy]] = DefaultPricingStrategy,
         run_continously: bool = True
     ):
     """
@@ -72,28 +73,56 @@ def run_octopus_agile_tariff_schedule(
         return OctopusAgileScheduleProvider(
             prices_client=OctopusAgilePricesClient(),
             config=ScheduleConfig(
-                prices_to_include,
-                action_when_cheap,
-                action_when_expensive,
+                prices_to_include=prices_to_include,
+                action_when_cheap=action_when_cheap,
+                action_when_expensive=action_when_expensive,
             ).add_custom_pricing_strategy(pricing_strategy)
         ).run()
+    
+    def handle_running_at_exactly00():
+        # This is actually a problem at every single time you run it on
+        # but 00:00 is the automated run time so we'll just handle it here
+        if (
+            datetime.now(tz=timezone.utc).hour == 0 and 
+            datetime.now(tz=timezone.utc).minute >= 0 and 
+            datetime.now(tz=timezone.utc).minute < 30
+        ):
+            jobs = schedule.get_jobs()
+            logging.debug(f"looking for stuck job at 00:00:00")
+            jobs_iter = list(jobs)
+            problematic_job = [job for job in jobs_iter if job.at_time.strftime("%H:%M:%S") == "00:00:00"]
+            
+            logging.debug(f"problematic job found: {problematic_job}")
+            if problematic_job[0] is not None:
+                problematic_job[0].run() # annoyingly this reschedules it again...
+                schedule.cancel_job(problematic_job[0])
+                logging.debug(f"problematic job ran and cancelled")
+                
 
-    if run_continously:
-        if not datetime.now(tz=timezone.utc).hour == 0:
+    if run_continously == True:
+        if not datetime.now(tz=timezone.utc).hour == 22 and not datetime.now(tz=timezone.utc).minute == 30:
             run_new_schedule()
 
         schedule.every().day.at("00:00").do(run_new_schedule)
-        while 1:
+        while True:
+            # TODO: Handle 00:00:00 edge case but considering the additional job
             schedule.run_pending()
             time.sleep(1)
 
-    if not run_continously:
-        # only runs 
+    if not run_continously == True:
        run_new_schedule()
-       while 1:
+       while True:
+        jobs = schedule.get_jobs()
+
+        logging.info(f"Jobs {len(jobs)}")
+        handle_running_at_exactly00()
+
         schedule.run_pending()
         time.sleep(1)
 
-        if datetime.now(tz=timezone.utc).hour == 0:
+        if len(jobs) == 1:
+            logging.info(f"remainder job: {jobs}")
+
+        if len(jobs) == 0:
             exit(1)
     

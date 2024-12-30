@@ -65,6 +65,8 @@ class ScheduleConfig(BaseModel):
         
         self._pricing_strategy = pricing_strategy
 
+        return self
+    
     model_config = dict(
         # this allows people to pass in extra fields,
         # *primarily for pricing strategy*
@@ -122,12 +124,12 @@ class OctopusAgileScheduleProvider(ScheduleProvider):
 
             def job(price: Price):
                 def run():
-                    if self.config.pricing_strategy is None:
+                    if self.config._pricing_strategy is None:
                         pricing_strategy = DefaultPricingStrategy(self.config)
                         pricing_strategy.handle_price(price=price, prices=todays_prices)
 
                     else:
-                        pricing_strategy = self.config.pricing_strategy(self.config)
+                        pricing_strategy = self.config._pricing_strategy(self.config)
                         pricing_strategy.handle_price(price=price, prices=todays_prices)
                     
                     # only run once for this set of prices
