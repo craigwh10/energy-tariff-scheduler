@@ -1,0 +1,15 @@
+site_name: Domestic Tariff Schedule SDK
+site_url: https://mydomain.org/
+theme:
+  name: material
+plugins:
+    - awesome-pages
+    - search
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

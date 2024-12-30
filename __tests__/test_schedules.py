@@ -10,9 +10,9 @@ import time_machine
 module_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../')) 
 sys.path.insert(0, module_dir)
 
-from python.schedules import PricingStrategy, ScheduleConfig, DefaultPricingStrategy, OctopusAgileScheduleProvider
+from schedules import PricingStrategy, ScheduleConfig, DefaultPricingStrategy, OctopusAgileScheduleProvider
 from unittest.mock import Mock
-from python.prices import Price
+from prices import Price
 
 class TestDefaultPricingStrategy:
     def test_happy_path_with_int_cheapest_prices_to_include(self):

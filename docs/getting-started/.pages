@@ -1,0 +1,5 @@
+nav:
+    - installation.md
+    - running-first-schedule.md
+    - custom-prices-to-include.md
+    - custom-pricing-strategies.md

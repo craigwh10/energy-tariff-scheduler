@@ -12,7 +12,7 @@ sys.path.append('../../')
 
 london_tz = ZoneInfo("Europe/London")
 
-from python.prices import OctopusAgilePricesClient
+from prices import OctopusAgilePricesClient
 
 class TestOctopusAgilePricesClient:
     def test_no_return_from_api(self, mocker):
@@ -59,7 +59,7 @@ class TestOctopusAgilePricesClient:
     def test_happy_path(self, mocker):
         mock_response = Mock()
         mock_response.status_code = 200
-        with open("./python/__tests__/mock_full_octopus_data.json") as f:
+        with open("./__tests__/mock_full_octopus_data.json") as f:
             mock_response.json.return_value = json.load(f)
 
         mocker.patch('requests.get', return_value=mock_response)
