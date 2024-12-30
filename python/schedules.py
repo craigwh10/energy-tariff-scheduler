@@ -1,11 +1,13 @@
 from datetime import timezone, datetime
-from typing import Callable, Optional
+from typing import Callable, Optional, Type
 from abc import abstractmethod, ABC
+import logging
 
 from prices import OctopusAgilePricesClient, Price
 
 import schedule # https://github.com/dbader/schedule
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
+from pydantic.types import PositiveInt
 
 
 class ScheduleProvider(ABC):
@@ -25,12 +27,33 @@ class PricingStrategy(ABC):
         """Define what to do when a price is considered cheap."""
         pass
 
-
 class ScheduleConfig(BaseModel):
-    prices_to_include: int | Callable[[list[Price]], int]
+    prices_to_include: PositiveInt | Callable[[list[Price]], int]
     action_when_cheap: Callable[[Optional[Price]], None]
     action_when_expensive: Callable[[Optional[Price]], None]
-    pricing_strategy: Optional[PricingStrategy]
+    # this allows people to simply pass in a class, rather than an instance
+    _pricing_strategy: Optional[PricingStrategy] = None
+
+    def add_custom_pricing_strategy(self, pricing_strategy: Type[PricingStrategy]):
+        # it's done this way to allow for the custom strategy to access the config
+        if not issubclass(pricing_strategy, PricingStrategy):
+            raise Exception(f"The custom pricing strategy {pricing_strategy.__name__} must inherit from PricingStrategy\nException fix: use 'from schedules import PricingStrategy' and 'class {pricing_strategy.__name__}(PricingStrategy):'")
+
+        try:
+            instance = pricing_strategy(self)
+            # accessing this will raise if it's not implemented
+            # it doesn't need a raise within the method, it's ABC behaviour.
+            instance.handle_price  
+        except TypeError:
+            raise Exception("The 'handle_price' method must be implemented in the custom pricing strategy")
+        
+        self._pricing_strategy = pricing_strategy
+
+    model_config = dict(
+        # this allows people to pass in extra fields,
+        # *primarily for pricing strategy*
+        extra="forbid"
+    )
 
 
 class DefaultPricingStrategy(PricingStrategy):
@@ -51,10 +74,11 @@ class DefaultPricingStrategy(PricingStrategy):
         sorted_position = sorted_prices.index(price)
 
         number_of_cheapest_to_include = self._determine_cheapest_to_include(prices)
-
-        if (sorted_position <= number_of_cheapest_to_include):
+        logging.debug(f"Price: {price}, Sorted Position: {sorted_position}")
+        logging.debug(f"Cheapest to include: {number_of_cheapest_to_include}")
+        if (sorted_position <= number_of_cheapest_to_include - 1):
             self.config.action_when_cheap(price)
-        if (sorted_position > number_of_cheapest_to_include):
+        if (sorted_position > number_of_cheapest_to_include - 1):
             self.config.action_when_expensive(price)
         
 
@@ -71,6 +95,7 @@ class OctopusAgileScheduleProvider(ScheduleProvider):
 
         for price in todays_prices:
             if price.datetime_from < datetime.now(timezone.utc):
+                logging.debug(f"Skipping price {price} as it's in the past")
                 continue
 
             def job(price: Price):
@@ -93,4 +118,5 @@ class OctopusAgileScheduleProvider(ScheduleProvider):
 
             # TODO: I can forsee people possibly want to do jobs within these half hourly blocks
             #       but this should be a future feature on request.
+            logging.debug(f"Running job at {time_to_run}")
             schedule.every().day.at(time_to_run).do(job_to_run)

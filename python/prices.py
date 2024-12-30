@@ -77,6 +77,6 @@ class OctopusAgilePricesClient(PricesClient):
 
         return [Price(
             value=float(hh_period["value_inc_vat"]),
-            datetime_from=datetime.fromisoformat(hh_period["valid_from"]),
-            datetime_to=datetime.fromisoformat(hh_period["valid_to"])
+            datetime_from=datetime.fromisoformat(hh_period["valid_from"]).replace(tzinfo=timezone.utc),
+            datetime_to=datetime.fromisoformat(hh_period["valid_to"]).replace(tzinfo=timezone.utc)
         ) for hh_period in data_json_results]
