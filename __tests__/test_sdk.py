@@ -43,7 +43,7 @@ class TestIntegrationRunOctopusAgileTariffSchedule:
             for hour in range(24):
                 for minute in [0, 30]:
                     traveller.move_to(datetime(2023, 12, 11, hour, minute, tzinfo=london_tz))
-                    time.sleep(1)
+                    time.sleep(0.001)
 
             schedule_thread.join(timeout=1)
             assert action_when_cheap.call_count == 5
