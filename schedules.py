@@ -92,8 +92,6 @@ class DefaultPricingStrategy(PricingStrategy):
         sorted_position = sorted_prices.index(price)
 
         number_of_cheapest_to_include = self._determine_cheapest_to_include(prices)
-        logging.debug(f"Price: {price}, Sorted Position: {sorted_position}")
-        logging.debug(f"Cheapest to include: {number_of_cheapest_to_include}")
 
         time = price.datetime_from.strftime("%H:%M")
 
@@ -123,7 +121,7 @@ class OctopusAgileScheduleProvider(ScheduleProvider):
                 continue
 
             def job(price: Price):
-                def run():
+                def schedule_price_task():
                     if self.config._pricing_strategy is None:
                         pricing_strategy = DefaultPricingStrategy(self.config)
                         pricing_strategy.handle_price(price=price, prices=todays_prices)
@@ -135,13 +133,14 @@ class OctopusAgileScheduleProvider(ScheduleProvider):
                     # only run once for this set of prices
                     return schedule.CancelJob
             
-                return run
+                return schedule_price_task
 
             job_to_run = job(price)
             time_to_run = price.datetime_from.strftime("%H:%M")
+            date_running_on = price.datetime_from.strftime("%d/%m/%Y %H:%M")
 
             # TODO: I can forsee people possibly want to do jobs within these half hourly blocks
             #       but this should be a future feature on request.
-            schedule.every().day.at(time_to_run).do(job_to_run)
+            schedule.every().day.at(time_to_run).do(job_to_run).tag(f"{date_running_on}")
 
         logging.info("Schedule generated, waiting for jobs to run...")

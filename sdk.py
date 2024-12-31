@@ -69,7 +69,6 @@ def run_octopus_agile_tariff_schedule(
     )
     ```
     """
-
     def run_new_schedule():
         return OctopusAgileScheduleProvider(
             prices_client=OctopusAgilePricesClient(),
@@ -80,33 +79,57 @@ def run_octopus_agile_tariff_schedule(
             ).add_custom_pricing_strategy(pricing_strategy)
         ).run()
     
-    def handle_running_at_exactly00():
+    def handle_running_at_exactly00(now: datetime):
         # This is actually a problem at every single time you run it on
         # but 00:00 is the automated run time so we'll just handle it here
         if (
-            datetime.now(tz=timezone.utc).hour == 0 and 
-            datetime.now(tz=timezone.utc).minute >= 0 and 
-            datetime.now(tz=timezone.utc).minute < 30
+            now.hour == 0 and 
+            now.minute >= 0 and 
+            now.minute < 30
         ):
             jobs = schedule.get_jobs()
-            logging.debug(f"looking for stuck job at 00:00:00")
             jobs_iter = list(jobs)
-            problematic_job = [job for job in jobs_iter if job.at_time.strftime("%H:%M:%S") == "00:00:00"]
+            problematic_jobs = [job for job in jobs_iter if job.at_time.strftime("%H:%M:%S") == "00:00:00"]
             
-            logging.debug(f"problematic job found: {problematic_job}")
-            if problematic_job[0] is not None:
-                problematic_job[0].run() # annoyingly this reschedules it again...
-                schedule.cancel_job(problematic_job[0])
-                logging.debug(f"problematic job ran and cancelled")
-                
+            if len(problematic_jobs) > 0:
+                for problematic_job in problematic_jobs:
+                    if "new_schedule" not in problematic_job.tags:
+                        problematic_job.run() # annoyingly this reschedules it again...
+                        schedule.cancel_job(problematic_job)
+                        logging.debug(f"problematic job ran and cancelled")
+
+    now = datetime.now(tz=timezone.utc)
 
     if run_continously == True:
-        if not datetime.now(tz=timezone.utc).hour == 22 and not datetime.now(tz=timezone.utc).minute == 30:
-            run_new_schedule()
+        ran_00_check = False
+        first_schedule_ran = False
 
-        schedule.every().day.at("00:00").do(run_new_schedule)
+        run_new_schedule()
+
         while True:
-            # TODO: Handle 00:00:00 edge case but considering the additional job
+            # after first run finished, set the new repeating schedule
+            if (
+                datetime.now(tz=timezone.utc).hour == 23 and
+                datetime.now(tz=timezone.utc).minute == 30 and
+                first_schedule_ran == False
+            ):
+                first_schedule_ran = True
+                schedule.every().day.at("00:00").do(run_new_schedule).tag("new_schedule")
+                logging.debug(f"set recurring schedule")
+            
+            if (ran_00_check == False and now.hour == 0):
+                # this only runs on first schedule where its possible to immediately start on 00:00
+                handle_running_at_exactly00(now)
+                ran_00_check = True
+
+            jobs = schedule.get_jobs()
+
+            logging.info(f"Jobs remaining this schedule: {len(jobs)}")
+
+            if len(jobs) == 2:
+                for job in jobs:
+                    logging.debug(f"<remainder> {job.tags} :: {job}")
+
             schedule.run_pending()
             time.sleep(1)
 
@@ -116,16 +139,13 @@ def run_octopus_agile_tariff_schedule(
        while True:
         jobs = schedule.get_jobs()
 
-        logging.info(f"Jobs {len(jobs)}")
+        logging.info(f"Jobs remaining this schedule: {len(jobs)}")
         if not ran_00_check: # prevent race conditions if check takes longer than 1s
-            handle_running_at_exactly00()
+            handle_running_at_exactly00(now)
         ran_00_check = True 
 
         schedule.run_pending()
         time.sleep(1)
-
-        if len(jobs) == 1:
-            logging.info(f"remainder job: {jobs}")
 
         if len(jobs) == 0:
             exit(1)
