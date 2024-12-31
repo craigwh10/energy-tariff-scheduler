@@ -29,6 +29,17 @@ mkdocs build - Build the documentation site.
 mkdocs -h - Print help message and exit
 ```
 
+## schedule library < apschedule
+
+I had a fair few issues using `schedule` library, such as:
+
+- Things you schedule at an exact time dont run the job at that time
+- You have to set up a blocking timer and control the clock speed on it which was a pain with testing
+- It doesn't cover CRON format and passing in exact dates, only HH:MM format
+- It doesn't clear historic jobs (likely due to above)
+
+apschedule resolved all of these for me.
+
 ## Misc
 
 Be wary of circular dependencies in classes.

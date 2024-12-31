@@ -11,7 +11,9 @@
 
 ## When does this run?
 
-You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then it will keep running, otherwise it will stop.
+You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then it will keep running, until you exit the program.
+
+This schedule is blocking so it's reccomended to run this in isolated programs, if you really need this to be async raise an <a href="https://github.com/craigwh10/domestic-tariff-scheduler/issues/new" target="_blank">raise an issue</a>.
 
 ## Setting up actions
 
@@ -38,9 +40,9 @@ You can see here in this example that there are two function I have created, one
 
 You can change these methods to do whatever you like, a common example is using a smart plug HTTP API's to make them turn on and off during those periods.
 
-If you now run your script it will stay running and you should see in your logs which periods it is running and with what time like below.
+If you now run your script it will stay running and you should see some logs which indicate the progression of your schedule.
 
-```sh
+<!-- ```sh
 $ python main.py
 INFO Generating schedule for 46 prices
 INFO Time: 00:00, Action: action_when_cheap, Price: 4p/kWh
@@ -50,9 +52,4 @@ INFO Time: 01:30, Action: action_when_cheap, Price: 12p/kWh
 INFO Time: 02:00, Action: action_when_expensive, Price: 50p/kWh
 ...
 INFO Schedule generated, waiting for jobs to run... 
-```
-
-!!! warning
-
-    Please note that if you have a [custom pricing strategy](./custom-pricing-strategies.md) that the logs wont automatically show, you have to add them yourself as shown in [custom pricing strategy example](./custom-pricing-strategies.md#example-creating-a-custom-pricing-strategy).
-
+``` -->

@@ -1,5 +1,5 @@
 import inspect
-import logging
+
 from typing import Callable, Optional, Type
 from pydantic import BaseModel, PositiveInt, field_validator
 
@@ -63,16 +63,12 @@ class ScheduleConfig(BaseModel):
         You pass in a class, not an instance as the config is injected later.
         ```
         """
-        logging.debug("<debug>>>")
-        logging.debug(f"<debug> {pricing_strategy.__name__}")
-
         # it's done this way to allow for the custom strategy to access the config
         if not issubclass(pricing_strategy, PricingStrategy):
             raise SystemExit(
                 f"Usage error:\n\n"+\
                 f"The custom pricing strategy {pricing_strategy.__name__} must inherit from PricingStrategy\n\nException fix: use 'from schedules import PricingStrategy' and 'class {pricing_strategy.__name__}(PricingStrategy):'"
             )
-
 
         try:
             instance = pricing_strategy(self)

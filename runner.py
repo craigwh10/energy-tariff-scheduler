@@ -9,7 +9,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 """
 Current tariff support:
-- [Octopus Agile](https://octopus.energy/smart/agile/)
+https://craigwh10.github.io/domestic-tariff-scheduler/#:~:text=Linkedin%20%2D%20Craig%20White-,Current%20supported%20supplier%20tariffs,-Octopus%20Agile%20Tariff
 """
 
 def run_octopus_agile_tariff_schedule(
@@ -32,7 +32,7 @@ def run_octopus_agile_tariff_schedule(
     from custom_sms import SMS
     import requests
     import logging
-    from DomesticTariffScheduler import runner, PricingStrategy, Price
+    from domestic_tariff_scheduler import runner, PricingStrategy, Price
 
     class CustomPricingStrategy(PricingStrategy):
         def __init__(self, config: ScheduleConfig):
