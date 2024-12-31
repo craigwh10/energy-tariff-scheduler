@@ -20,7 +20,7 @@
     
     
       
-        <title>Using custom pricing strategies - Domestic Tariff Schedule SDK</title>
+        <title>Using custom pricing strategies - Domestic Tariff Scheduler</title>
       
     
     
@@ -78,7 +78,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Domestic Tariff Schedule SDK" class="md-header__button md-logo" aria-label="Domestic Tariff Schedule SDK" data-md-component="logo">
+    <a href="../.." title="Domestic Tariff Scheduler" class="md-header__button md-logo" aria-label="Domestic Tariff Scheduler" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -92,7 +92,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Domestic Tariff Schedule SDK
+            Domestic Tariff Scheduler
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -173,13 +173,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Domestic Tariff Schedule SDK" class="md-nav__button md-logo" aria-label="Domestic Tariff Schedule SDK" data-md-component="logo">
+    <a href="../.." title="Domestic Tariff Scheduler" class="md-nav__button md-logo" aria-label="Domestic Tariff Scheduler" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    Domestic Tariff Schedule SDK
+    Domestic Tariff Scheduler
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -195,7 +195,7 @@
         
   
   <span class="md-ellipsis">
-    Welcome to Domestic Tariff Scheduler SDK
+    Welcome to Domestic Tariff Scheduler
   </span>
   
 
@@ -469,7 +469,7 @@
 <p class="admonition-title">Note</p>
 <p>It's important to note that in this example, that the custom pricing strategy <code>CustomPricingStrategy</code>inherits from <code>PricingStrategy</code>, this is necessary otherwise you will hit a validation error to ensure it meets the contract and works with the rest of the code.</p>
 </div>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">domestic_tariff_scheduler_sdk</span> <span class="kn">import</span> <span class="n">tariff</span><span class="p">,</span> <span class="n">Price</span><span class="p">,</span> <span class="n">PricingStrategy</span><span class="p">,</span> <span class="n">ScheduleConfig</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">domestic_tariff_scheduler</span> <span class="kn">import</span> <span class="n">runner</span><span class="p">,</span> <span class="n">Price</span><span class="p">,</span> <span class="n">PricingStrategy</span><span class="p">,</span> <span class="n">ScheduleConfig</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span> <span class="nc">CustomPricingStrategy</span><span class="p">(</span><span class="n">PricingStrategy</span><span class="p">):</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ScheduleConfig</span><span class="p">):</span>
@@ -497,7 +497,7 @@
 </span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">SMS</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Price is expensive (</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s2">p/kWh), turning off shelly&quot;</span><span class="p">)</span>    
 </span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://&lt;shelly_ip&gt;/relay/0?turn=off&quot;</span><span class="p">)</span>
 </span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">tariff</span><span class="o">.</span><span class="n">run_octopus_agile_tariff_schedule</span><span class="p">(</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">runner</span><span class="o">.</span><span class="n">run_octopus_agile_tariff_schedule</span><span class="p">(</span>
 </span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n">prices_to_include</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="c1"># 5 opportunties to trigger &quot;action_when_cheap&quot;</span>
 </span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n">action_when_cheap</span><span class="o">=</span><span class="n">switch_shelly_on_and_alert</span><span class="p">,</span>
 </span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n">action_when_expensive</span><span class="o">=</span><span class="n">switch_shelly_off_and_alert</span><span class="p">,</span>

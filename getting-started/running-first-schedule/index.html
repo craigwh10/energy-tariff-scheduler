@@ -22,7 +22,7 @@
     
     
       
-        <title>Running your first schedule - Domestic Tariff Schedule SDK</title>
+        <title>Running your first schedule - Domestic Tariff Scheduler</title>
       
     
     
@@ -80,7 +80,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Domestic Tariff Schedule SDK" class="md-header__button md-logo" aria-label="Domestic Tariff Schedule SDK" data-md-component="logo">
+    <a href="../.." title="Domestic Tariff Scheduler" class="md-header__button md-logo" aria-label="Domestic Tariff Scheduler" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -94,7 +94,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Domestic Tariff Schedule SDK
+            Domestic Tariff Scheduler
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -175,13 +175,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Domestic Tariff Schedule SDK" class="md-nav__button md-logo" aria-label="Domestic Tariff Schedule SDK" data-md-component="logo">
+    <a href="../.." title="Domestic Tariff Scheduler" class="md-nav__button md-logo" aria-label="Domestic Tariff Scheduler" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    Domestic Tariff Schedule SDK
+    Domestic Tariff Scheduler
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -197,7 +197,7 @@
         
   
   <span class="md-ellipsis">
-    Welcome to Domestic Tariff Scheduler SDK
+    Welcome to Domestic Tariff Scheduler
   </span>
   
 
@@ -480,14 +480,13 @@
 <li><code>action_when_cheap</code> is your function that is called when the half hourly period is among the cheapest</li>
 <li><code>action_when_expensive</code> is your function that is called when the half hourly period is more expensive than the cheapest</li>
 <li><code>pricing_strategy</code> is a custom class you can pass in to act on prices in a more complex way (this is covered in <a href="../custom-pricing-strategies/">custom pricing strategies</a>)</li>
-<li><code>run_continously</code> boolean flag of whether you just want the schedules to run once or continously regenerating a new schedule at 00:00am the next day</li>
 </ul>
 <h2 id="when-does-this-run">When does this run?</h2>
-<p>You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then if you have <code>run_continously</code> as true then it will keep running, otherwise it will stop.</p>
+<p>You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then it will keep running, otherwise it will stop.</p>
 <h2 id="setting-up-actions">Setting up actions</h2>
-<p>In the SDK we have two available methods that you need to set, <code>action_when_cheap</code> and <code>action_when_expensive</code>, see below a simple example of how this is set up.</p>
+<p>In the library we have two available methods that you need to set, <code>action_when_cheap</code> and <code>action_when_expensive</code>, see below a simple example of how this is set up.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># main.py</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">domestic_tariff_scheduler_sdk</span> <span class="kn">import</span> <span class="n">tariff</span><span class="p">,</span> <span class="n">Price</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">domestic_tariff_scheduler</span> <span class="kn">import</span> <span class="n">runner</span><span class="p">,</span> <span class="n">Price</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">def</span> <span class="nf">action_when_cheap</span><span class="p">(</span><span class="n">price</span><span class="p">:</span> <span class="n">Price</span><span class="p">):</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cheap&quot;</span><span class="p">,</span> <span class="n">price</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
@@ -495,7 +494,7 @@
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">def</span> <span class="nf">action_when_expensive</span><span class="p">(</span><span class="n">price</span><span class="p">:</span> <span class="n">Price</span><span class="p">)</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;expensive&quot;</span><span class="p">,</span> <span class="n">price</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">tariff</span><span class="o">.</span><span class="n">run_octopus_agile_tariff_schedule</span><span class="p">(</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">runner</span><span class="o">.</span><span class="n">run_octopus_agile_tariff_schedule</span><span class="p">(</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  <span class="n">prices_to_include</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  <span class="n">action_when_cheap</span><span class="p">:</span> <span class="n">action_when_cheap</span><span class="p">,</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  <span class="n">action_when_expensive</span><span class="p">:</span> <span class="n">action_when_expensive</span><span class="p">,</span>
