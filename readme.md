@@ -10,11 +10,12 @@ pip install domestic-tariff-scheduler
 
 - [Octopus Agile](https://octopus.energy/smart/agile/)
 
-## The code
+## Structure
 
 - [prices.py](./prices.py): responsible for fetching data from external APIs and transform for usage based on contracts
 - [schedules.py](./schedules.py): responsible for creating schedules and applying pricing logic
 - [runner.py](./runner.py): responsible for the interface between users and the program
+- [config.py](.config.py): responsible for providing validated user inputted configuration
 
 ## FAQ
 
