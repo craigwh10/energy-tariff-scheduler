@@ -41,3 +41,7 @@ If you want to be featured on here send me a message on [linkedin](https://www.l
 ## Related links
 
 - <a href="https://github.com/craigwh10/domestic-tariff-scheduler" target="_blank">https://github.com/craigwh10/domestic-tariff-scheduler</a>
+
+<div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
+    <a href="./getting-started/installation" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">Next &rarr;</a>
+</div>

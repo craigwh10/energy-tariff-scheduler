@@ -42,6 +42,11 @@ You can change these methods to do whatever you like, a common example is using 
 
 If you now run your script it will stay running and you should see some logs which indicate the progression of your schedule.
 
+<div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
+    <a href="../installation" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">&larr; Previous</a>
+    <a href="../custom-prices-to-include" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">Next &rarr;</a>
+</div>
+
 <!-- ```sh
 $ python main.py
 INFO Generating schedule for 46 prices

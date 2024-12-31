@@ -40,3 +40,8 @@ runner.run_octopus_agile_tariff_schedule(
 ```
 
 In this setup I've created a theoretical scenario where I only want to spend take advantage of 15p/kWh total of prices, and work out from the available prices how many prices that is, which the strategy will then use.
+
+<div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
+    <a href="../running-first-schedule" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">&larr; Previous</a>
+    <a href="../custom-pricing-strategies" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">Next &rarr;</a>
+</div>

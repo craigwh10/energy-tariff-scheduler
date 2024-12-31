@@ -59,3 +59,7 @@ runner.run_octopus_agile_tariff_schedule(
     pricing_strategy=CustomPricingStrategy
 )
 ```
+
+<div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
+    <a href="../custom-prices-to-include" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">&larr; Previous</a>
+</div>

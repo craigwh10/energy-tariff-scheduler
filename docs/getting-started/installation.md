@@ -13,3 +13,8 @@ Given now you have python installed, use the following command to install the de
 ```sh
 pip install domestic-tariff-scheduler
 ```
+
+<div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
+    <a href="../../" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">&larr; Previous</a>
+    <a href="../running-first-schedule" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">Next &rarr;</a>
+</div>
