@@ -1,12 +1,8 @@
 # Welcome to Domestic Tariff Scheduler
 
-The Domestic Tariff Scheduler is designed to help users easily leverage pricing data provided by Energy Suppliers. It enables smart actions on connected devices when prices are particularly low or high, simplifying the process of optimizing energy usage.
+The Domestic Tariff Scheduler is designed to help users easily leverage pricing data provided by Energy Suppliers. It enables scheduled smart actions on connected devices when prices are particularly low or high, simplifying the process of optimizing energy usage in your home.
 
-By handling the complexities of API integration, validation, and near-optimal usage, this eliminates much of the usual hassle. You simply define your desired actions, configure your preferences, and let it handle the rest.
-
-For convenience, we recommend running on a Raspberry Pi, as it typically comes pre-installed with Python. This allows you to quickly install the library and start automating your energy-related actions.
-
-Recognizing that users may have diverse configuration needs, the library is designed to be highly customizable. You can define how prices are selected, specify how pricing data is used, and integrate the library with any actions or devices you choose—all while maintaining flexibility and control.
+This library works for people who just want to plug and play and kick off with the preconfigured price strategies, or if you want, you can provide your own strategy.
 
 ## What are tariffs
 
