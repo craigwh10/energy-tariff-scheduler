@@ -8,7 +8,7 @@ The function must always return an integer otherwise it will fail, this integer 
 
 ```python
 # main.py
-from domestic_tariff_scheduler_sdk import tariff, Price
+from domestic_tariff_scheduler import runner, Price
 
 def action_when_cheap(price: Price):
     print("cheap", price.value)
@@ -32,7 +32,7 @@ def prices_to_include(prices: list[Price]):
     return count
     
 
-tariff.run_octopus_agile_tariff_schedule(
+runner.run_octopus_agile_tariff_schedule(
         prices_to_include: prices_to_include,
         action_when_cheap: action_when_cheap,
         action_when_expensive: action_when_expensive,

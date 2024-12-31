@@ -9,6 +9,9 @@ class Price(BaseModel):
     datetime_from: datetime
     datetime_to: datetime
 
+    def __str__(self):
+        return f"(value={self.value}, from={self.datetime_from.isoformat()}, to={self.datetime_to.isoformat()})"
+
 class PricesClient(ABC):
     @abstractmethod
     def get_today(self) -> list[Price]:
@@ -73,7 +76,7 @@ class OctopusAgilePricesClient(PricesClient):
         if len(data_json_results) != 46:
             logging.warning("Data is incomplete, not all usual half hourly periods are included")
             logging.warning("This is likely a problem with the Octopus API, try running this again in a few minutes")
-            logging.warning("If you believe this isn't an issue with the API then raise an issue here https://github.com/craigwh10/domestic-tariff-scheduler-sdk/issues/new.")
+            logging.warning("If you believe this isn't an issue with the API then raise an issue here https://github.com/craigwh10/domestic-tariff-scheduler/issues/new.")
 
         return [Price(
             value=float(hh_period["value_inc_vat"]),

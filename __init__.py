@@ -1,15 +1,16 @@
-from sdk import run_octopus_agile_tariff_schedule
+from runner import run_octopus_agile_tariff_schedule
 from prices import Price
-from schedules import PricingStrategy, ScheduleConfig
+from schedules import PricingStrategy
+from config import ScheduleConfig
 
 # Contain tariff related scheduling functions
-tariff = dict(
+runner = dict(
     run_octopus_agile_tariff_schedule=run_octopus_agile_tariff_schedule,
 )
 
 # What to expose to users
 __all__ = [
-    "tariff",
+    "runner",
     "Price",
     "PricingStrategy",
     "ScheduleConfig"

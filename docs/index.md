@@ -1,12 +1,12 @@
-# Welcome to Domestic Tariff Scheduler SDK
+# Welcome to Domestic Tariff Scheduler
 
-The Domestic Tariff Scheduler SDK is designed to help users easily leverage pricing data provided by Energy Suppliers. It enables smart actions on connected devices when prices are particularly low or high, simplifying the process of optimizing energy usage.
+The Domestic Tariff Scheduler is designed to help users easily leverage pricing data provided by Energy Suppliers. It enables smart actions on connected devices when prices are particularly low or high, simplifying the process of optimizing energy usage.
 
-By handling the complexities of API integration, validation, and near-optimal usage, the SDK eliminates much of the usual hassle. You simply define your desired actions, configure your preferences, and let the SDK handle the rest.
+By handling the complexities of API integration, validation, and near-optimal usage, this eliminates much of the usual hassle. You simply define your desired actions, configure your preferences, and let it handle the rest.
 
-For convenience, we recommend running the SDK on a Raspberry Pi, as it typically comes pre-installed with Python. This allows you to quickly install the SDK and start automating your energy-related actions.
+For convenience, we recommend running on a Raspberry Pi, as it typically comes pre-installed with Python. This allows you to quickly install the library and start automating your energy-related actions.
 
-Recognizing that users may have diverse configuration needs, the SDK is designed to be highly customizable. You can define how prices are selected, specify how pricing data is used, and integrate the SDK with any actions or devices you choose—all while maintaining flexibility and control.
+Recognizing that users may have diverse configuration needs, the library is designed to be highly customizable. You can define how prices are selected, specify how pricing data is used, and integrate the library with any actions or devices you choose—all while maintaining flexibility and control.
 
 ## What are tariffs
 
@@ -16,7 +16,7 @@ Tariffs are what Energy Suppliers use to offer pricing options for your electric
 
 Yes they do, the prices are driven by supply and demand throughout the day, such as when people are awake or asleep, or fluctuations in generation such as it being windy during the day leading to cheaper electricity from renewable sources.
 
-Here's an example of 11 days and a schedule generated from this SDK for Octopus Agile tariff, for a battery being charged under constant load:
+Here's an example of 11 days and a schedule generated from this library for Octopus Agile tariff, for a battery being charged under constant load:
 
 <img src="schedule.gif" alt="11 days of battery being charged over constant load" />
 
@@ -40,4 +40,4 @@ If you want to be featured on here send me a message on [linkedin](https://www.l
 
 ## Related links
 
-- <a href="https://github.com/craigwh10/domestic-tariff-scheduler-sdk" target="_blank">https://github.com/craigwh10/domestic-tariff-scheduler-sdk</a>
+- <a href="https://github.com/craigwh10/domestic-tariff-scheduler" target="_blank">https://github.com/craigwh10/domestic-tariff-scheduler</a>

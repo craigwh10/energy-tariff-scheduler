@@ -8,19 +8,18 @@
 - `action_when_cheap` is your function that is called when the half hourly period is among the cheapest
 - `action_when_expensive` is your function that is called when the half hourly period is more expensive than the cheapest
 - `pricing_strategy` is a custom class you can pass in to act on prices in a more complex way (this is covered in [custom pricing strategies](./custom-pricing-strategies.md))
-- `run_continously` boolean flag of whether you just want the schedules to run once or continously regenerating a new schedule at 00:00am the next day
 
 ## When does this run?
 
-You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then if you have `run_continously` as true then it will keep running, otherwise it will stop.
+You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then it will keep running, otherwise it will stop.
 
 ## Setting up actions
 
-In the SDK we have two available methods that you need to set, `action_when_cheap` and `action_when_expensive`, see below a simple example of how this is set up.
+In the library we have two available methods that you need to set, `action_when_cheap` and `action_when_expensive`, see below a simple example of how this is set up.
 
 ```python
 # main.py
-from domestic_tariff_scheduler_sdk import tariff, Price
+from domestic_tariff_scheduler import runner, Price
 
 def action_when_cheap(price: Price):
     print("cheap", price.value)
@@ -28,7 +27,7 @@ def action_when_cheap(price: Price):
 def action_when_expensive(price: Price)
     print("expensive", price.value)
 
-tariff.run_octopus_agile_tariff_schedule(
+runner.run_octopus_agile_tariff_schedule(
   prices_to_include: 12,
   action_when_cheap: action_when_cheap,
   action_when_expensive: action_when_expensive,

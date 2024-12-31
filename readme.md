@@ -1,9 +1,9 @@
-# Domestic Tariff Scheduler Python SDK
+# Domestic Tariff Scheduler
 
 Enables smart actions based on daily pricing from utilities.
 
 ```sh
-pip install domestic-tariff-scheduler-sdk
+pip install domestic-tariff-scheduler
 ```
 
 ## Supported tariff's (so far)
@@ -14,7 +14,7 @@ pip install domestic-tariff-scheduler-sdk
 
 - [prices.py](./prices.py): responsible for fetching data from external APIs and transform for usage based on contracts
 - [schedules.py](./schedules.py): responsible for creating schedules and applying pricing logic
-- [sdk.py](./sdk.py): responsible for the interface between users and the program
+- [runner.py](./runner.py): responsible for the interface between users and the program
 
 ## FAQ
 
