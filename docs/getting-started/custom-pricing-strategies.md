@@ -24,7 +24,7 @@ Additionally I'm going to set up some custom actions which:
     It's important to note that in this example, that the custom pricing strategy `CustomPricingStrategy` inherits from `PricingStrategy`, this is necessary otherwise you will hit a validation error to ensure it meets the contract and works with the rest of the code.
 
 ```python
-from domestic_tariff_scheduler import runner, Price, PricingStrategy, ScheduleConfig
+from energy_tariff_scheduler import runner, Price, PricingStrategy, ScheduleConfig
 
 class CustomPricingStrategy(PricingStrategy):
     def __init__(self, config: ScheduleConfig):

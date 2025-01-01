@@ -11,7 +11,7 @@ If you do not then follow [this guide](https://www.python.org/downloads/) or use
 Given now you have python installed, use the following command to install the dependency on your machine (or in a virtual environment).
 
 ```sh
-pip install domestic-tariff-scheduler
+pip install energy-tariff-scheduler
 ```
 
 <div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">

@@ -13,7 +13,7 @@
 
 You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then it will keep running, until you exit the program.
 
-This schedule is blocking so it's reccomended to run this in isolated programs, if you really need this to be async raise an <a href="https://github.com/craigwh10/domestic-tariff-scheduler/issues/new" target="_blank">raise an issue</a>.
+This schedule is blocking so it's reccomended to run this in isolated programs, if you really need this to be async raise an <a href="https://github.com/craigwh10/energy-tariff-scheduler/issues/new" target="_blank">raise an issue</a>.
 
 ## Setting up actions
 
@@ -21,7 +21,7 @@ In the library we have two available methods that you need to set, `action_when_
 
 ```python
 # main.py
-from domestic_tariff_scheduler import runner, Price
+from energy_tariff_scheduler import runner, Price
 
 def action_when_cheap(price: Price):
     print("cheap", price.value)

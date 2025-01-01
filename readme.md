@@ -1,10 +1,12 @@
-# Domestic Tariff Scheduler
+# Energy Tariff Scheduler
 
 Enables smart actions based on daily pricing from utilities.
 
 ```sh
-pip install domestic-tariff-scheduler
+pip install energy-tariff-scheduler
 ```
+
+Full documentation: [https://craigwh10.github.io/energy-tariff-scheduler/](https://craigwh10.github.io/energy-tariff-scheduler/)
 
 ## Supported tariff's (so far)
 

@@ -1,8 +1,8 @@
-# Welcome to Domestic Tariff Scheduler
+# Welcome to Energy Tariff Scheduler
 
-The Domestic Tariff Scheduler is designed to help users easily leverage pricing data provided by Energy Suppliers. It enables scheduled smart actions on connected devices when prices are particularly low or high, simplifying the process of optimizing energy usage in your home.
+This is designed to help users easily leverage pricing data provided by Energy Suppliers. It enables scheduled smart actions on connected devices when prices are particularly low or high, simplifying the process of optimizing energy usage in your home.
 
-This library works for people who just want to plug and play and kick off with the preconfigured price strategies, or if you want, you can provide your own strategy.
+The library will work for people who just want to plug and play and kick off with the preconfigured price strategies, or if you want, you can provide your own strategy.
 
 ## What are tariffs
 
@@ -36,7 +36,7 @@ If you want to be featured on here send me a message on [linkedin](https://www.l
 
 ## Related links
 
-- <a href="https://github.com/craigwh10/domestic-tariff-scheduler" target="_blank">https://github.com/craigwh10/domestic-tariff-scheduler</a>
+- <a href="https://github.com/craigwh10/energy-tariff-scheduler" target="_blank">https://github.com/craigwh10/energy-tariff-scheduler</a>
 
 <div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
     <a href="./getting-started/installation" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">Next &rarr;</a>

@@ -8,7 +8,7 @@ The function must always return an integer otherwise it will fail, this integer 
 
 ```python
 # main.py
-from domestic_tariff_scheduler import runner, Price
+from energy_tariff_scheduler import runner, Price
 
 def action_when_cheap(price: Price):
     print("cheap", price.value)

@@ -7,12 +7,14 @@ import time_machine
 from zoneinfo import ZoneInfo
 import json
 import sys
+import os
 
-sys.path.append('../../') 
+module_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../energy_tariff_scheduler/')) 
+sys.path.insert(0, module_dir)
 
 london_tz = ZoneInfo("Europe/London")
 
-from prices import OctopusAgilePricesClient
+from energy_tariff_scheduler.prices import OctopusAgilePricesClient
 
 class TestOctopusAgilePricesClient:
     def test_no_return_from_api(self, mocker):

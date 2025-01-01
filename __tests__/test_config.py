@@ -1,16 +1,21 @@
 from datetime import datetime, timezone
 from unittest.mock import Mock
+import os
+import sys
+
+module_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../energy_tariff_scheduler/')) 
+sys.path.insert(0, module_dir)
+
+print(sys.path)
 
 import pytest
 import time_machine
 
-from config import ScheduleConfig
-from prices import Price
-from schedules import PricingStrategy
+from energy_tariff_scheduler.config import ScheduleConfig
+from energy_tariff_scheduler.prices import Price
+from energy_tariff_scheduler.schedules import PricingStrategy
 
-"""
 
-"""
 
 class TestScheduleConfig:
     @time_machine.travel(datetime(2024, 3, 24, 0, 30, tzinfo=timezone.utc))

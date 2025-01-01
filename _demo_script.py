@@ -1,9 +1,12 @@
-import runner
-from prices import Price
+import os
+import sys
 import logging
-from schedules import PricingStrategy
+
+from energy_tariff_scheduler import PricingStrategy, Price, runner
 
 logging.getLogger().setLevel(logging.DEBUG)
+
+logging.debug("starting")
 
 def switch_shelly_on_and_alert(price: Price):
     print("Switching Shelly on and alerting")

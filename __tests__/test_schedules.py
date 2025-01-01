@@ -7,13 +7,13 @@ from datetime import timezone
 from pytest_mock import MockerFixture
 import time_machine
 
-module_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../')) 
+module_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../energy_tariff_scheduler/')) 
 sys.path.insert(0, module_dir)
 
-from schedules import PricingStrategy, DefaultPricingStrategy, OctopusAgileScheduleProvider
+from energy_tariff_scheduler.schedules import PricingStrategy, DefaultPricingStrategy, OctopusAgileScheduleProvider
 from unittest.mock import Mock
-from config import ScheduleConfig
-from prices import Price
+from energy_tariff_scheduler.config import ScheduleConfig
+from energy_tariff_scheduler.prices import Price
 
 class TestDefaultPricingStrategy:
     def test_happy_path_with_int_cheapest_prices_to_include(self):

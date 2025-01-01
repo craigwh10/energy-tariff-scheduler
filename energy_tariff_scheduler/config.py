@@ -3,8 +3,8 @@ import inspect
 from typing import Callable, Optional, Type
 from pydantic import BaseModel, PositiveInt, field_validator
 
-from prices import Price
-from schedules import PricingStrategy
+from .prices import Price
+from .schedules import PricingStrategy
 
 
 class ScheduleConfig(BaseModel):

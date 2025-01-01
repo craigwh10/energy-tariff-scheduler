@@ -1,15 +1,17 @@
-from schedules import DefaultPricingStrategy, OctopusAgileScheduleProvider, PricingStrategy
-from config import ScheduleConfig
-from prices import OctopusAgilePricesClient, Price
+from .schedules import DefaultPricingStrategy, OctopusAgileScheduleProvider, PricingStrategy
+from .config import ScheduleConfig
+from .prices import OctopusAgilePricesClient, Price
 
+import logging
 from typing import Callable, Optional, Type
 from datetime import datetime, timezone
+import time
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
 """
 Current tariff support:
-https://craigwh10.github.io/domestic-tariff-scheduler/#:~:text=Linkedin%20%2D%20Craig%20White-,Current%20supported%20supplier%20tariffs,-Octopus%20Agile%20Tariff
+https://craigwh10.github.io/energy-tariff-scheduler/#:~:text=Linkedin%20%2D%20Craig%20White-,Current%20supported%20supplier%20tariffs,-Octopus%20Agile%20Tariff
 """
 
 def run_octopus_agile_tariff_schedule(
@@ -32,7 +34,7 @@ def run_octopus_agile_tariff_schedule(
     from custom_sms import SMS
     import requests
     import logging
-    from domestic_tariff_scheduler import runner, PricingStrategy, Price
+    from energy_tariff_scheduler import runner, PricingStrategy, Price
 
     class CustomPricingStrategy(PricingStrategy):
         def __init__(self, config: ScheduleConfig):
@@ -86,14 +88,18 @@ def run_octopus_agile_tariff_schedule(
     )
 
     now = datetime.now(tz=timezone.utc)
-    if now.hour != 0 and now.minute != 0:
-        add_price_schedule()
+    logging.debug(f"{now.hour != 0} and {now.minute != 0}")
+    logging.debug(f"{now.hour} and {now.minute}")
+
+    add_price_schedule()
 
     continuous_scheduler.start()
 
     try:
         while True:
-            pass
+            # This is extremely important,
+            # no sleep would lead to excessive CPU usage
+            time.sleep(0.01)
     except (KeyboardInterrupt, SystemExit):
         continuous_scheduler.shutdown()
     
