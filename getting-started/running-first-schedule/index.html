@@ -22,7 +22,7 @@
     
     
       
-        <title>Running your first schedule - Domestic Tariff Scheduler</title>
+        <title>Running your first schedule - Energy Tariff Scheduler</title>
       
     
     
@@ -80,7 +80,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Domestic Tariff Scheduler" class="md-header__button md-logo" aria-label="Domestic Tariff Scheduler" data-md-component="logo">
+    <a href="../.." title="Energy Tariff Scheduler" class="md-header__button md-logo" aria-label="Energy Tariff Scheduler" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -94,7 +94,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Domestic Tariff Scheduler
+            Energy Tariff Scheduler
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -175,13 +175,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Domestic Tariff Scheduler" class="md-nav__button md-logo" aria-label="Domestic Tariff Scheduler" data-md-component="logo">
+    <a href="../.." title="Energy Tariff Scheduler" class="md-nav__button md-logo" aria-label="Energy Tariff Scheduler" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    Domestic Tariff Scheduler
+    Energy Tariff Scheduler
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -197,7 +197,7 @@
         
   
   <span class="md-ellipsis">
-    Welcome to Domestic Tariff Scheduler
+    Welcome to Energy Tariff Scheduler
   </span>
   
 
@@ -483,11 +483,11 @@
 </ul>
 <h2 id="when-does-this-run">When does this run?</h2>
 <p>You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then it will keep running, until you exit the program.</p>
-<p>This schedule is blocking so it's reccomended to run this in isolated programs, if you really need this to be async raise an <a href="https://github.com/craigwh10/domestic-tariff-scheduler/issues/new" target="_blank">raise an issue</a>.</p>
+<p>This schedule is blocking so it's reccomended to run this in isolated programs, if you really need this to be async raise an <a href="https://github.com/craigwh10/energy-tariff-scheduler/issues/new" target="_blank">raise an issue</a>.</p>
 <h2 id="setting-up-actions">Setting up actions</h2>
 <p>In the library we have two available methods that you need to set, <code>action_when_cheap</code> and <code>action_when_expensive</code>, see below a simple example of how this is set up.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># main.py</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">domestic_tariff_scheduler</span> <span class="kn">import</span> <span class="n">runner</span><span class="p">,</span> <span class="n">Price</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">energy_tariff_scheduler</span> <span class="kn">import</span> <span class="n">runner</span><span class="p">,</span> <span class="n">Price</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">def</span> <span class="nf">action_when_cheap</span><span class="p">(</span><span class="n">price</span><span class="p">:</span> <span class="n">Price</span><span class="p">):</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cheap&quot;</span><span class="p">,</span> <span class="n">price</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
