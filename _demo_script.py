@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+import requests
 
 from energy_tariff_scheduler import PricingStrategy, Price, runner
 

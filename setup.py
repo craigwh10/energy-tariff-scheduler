@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 
 this_directory = os.path.abspath(os.path.dirname(__file__))
-readme_path = os.path.join(this_directory, "readme.md")
+readme_path = os.path.join(this_directory, "readme_pypi.md")
 
 with open(readme_path, 'r') as f:
     long_description = f.read()

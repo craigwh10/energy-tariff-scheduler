@@ -1,10 +1,9 @@
 from .schedules import DefaultPricingStrategy, OctopusAgileScheduleProvider, PricingStrategy
-from .config import ScheduleConfig
+from .config import ScheduleConfig, TrackedScheduleConfigCreator
 from .prices import OctopusAgilePricesClient, Price
 
 import logging
 from typing import Callable, Optional, Type
-from datetime import datetime, timezone
 import time
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -13,6 +12,38 @@ from apscheduler.schedulers.background import BackgroundScheduler
 Current tariff support:
 https://craigwh10.github.io/energy-tariff-scheduler/#:~:text=Linkedin%20%2D%20Craig%20White-,Current%20supported%20supplier%20tariffs,-Octopus%20Agile%20Tariff
 """
+
+class ApScheduleSchedulerFilter(logging.Filter):
+    def filter(self, record):
+        if record.getMessage().startswith('Added job'):
+            return False
+        if record.getMessage().startswith('Adding new job'):
+            return False
+        if record.getMessage().startswith('Removed job'):
+            # This is covered by a log saying jobs before will be missed.
+            return False
+        if record.getMessage().startswith('Adding job tentatively'):
+            # This is covered by a log saying jobs before will be missed.
+            return False
+        if record.getMessage().startswith('Scheduler started'):
+            # This is covered by a log saying jobs before will be missed.
+            return False
+        return True
+    
+class ApScheduleExecutorsFilter(logging.Filter):
+    def filter(self, record):
+        if record.getMessage().startswith('Run time of job'):
+            # This is covered by a log saying jobs before will be missed.
+            return False
+        return True
+     
+logging.getLogger("apscheduler.scheduler").addFilter(
+    ApScheduleSchedulerFilter()
+)
+
+logging.getLogger("apscheduler.executors.default").addFilter(
+    ApScheduleExecutorsFilter()
+)
 
 def run_octopus_agile_tariff_schedule(
         prices_to_include: int | Callable[[list[Price]], int],
@@ -70,28 +101,36 @@ def run_octopus_agile_tariff_schedule(
     """
     continuous_scheduler = BackgroundScheduler()
 
-    def add_price_schedule():
+    def set_daily_schedule() -> list[str]:
+        config = ScheduleConfig(
+            prices_to_include=prices_to_include,
+            action_when_cheap=action_when_cheap,
+            action_when_expensive=action_when_expensive,
+        ).add_custom_pricing_strategy(
+            pricing_strategy
+        )
+        
+        tracked_schedule_config = TrackedScheduleConfigCreator(
+            config=config,
+        )
+
         OctopusAgileScheduleProvider(
             prices_client=OctopusAgilePricesClient(),
-            config=ScheduleConfig(
-                prices_to_include=prices_to_include,
-                action_when_cheap=action_when_cheap,
-                action_when_expensive=action_when_expensive,
-            ).add_custom_pricing_strategy(pricing_strategy)
-        ).run(scheduler=continuous_scheduler)
+            config=config,
+            scheduler=continuous_scheduler,
+            tracked_schedule_config=tracked_schedule_config
+        ).run()
+
+        tracked_schedule_config.log_schedule()
 
     continuous_scheduler.add_job(
-        func=add_price_schedule,
+        func=set_daily_schedule,
         trigger="cron",
         hour=0,
         minute=0
     )
 
-    now = datetime.now(tz=timezone.utc)
-    logging.debug(f"{now.hour != 0} and {now.minute != 0}")
-    logging.debug(f"{now.hour} and {now.minute}")
-
-    add_price_schedule()
+    set_daily_schedule()
 
     continuous_scheduler.start()
 

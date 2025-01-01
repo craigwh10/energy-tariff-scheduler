@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     # Resolves circular import as it's only used
     # for typing.
     from config import ScheduleConfig
+    from config import TrackedScheduleConfigCreator
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -67,41 +68,48 @@ class DefaultPricingStrategy(PricingStrategy):
         if (sorted_position > number_of_cheapest_to_include - 1):
             logging.info(f"Time: {time}, Action: action_when_expensive, Price: {price.value}p/kWh")
             self.config.action_when_expensive(price)
-        
 
 class OctopusAgileScheduleProvider(ScheduleProvider):
-    def __init__(self, prices_client: OctopusAgilePricesClient, config: "ScheduleConfig"):
+    def __init__(
+            self,
+            prices_client: OctopusAgilePricesClient,
+            config: "ScheduleConfig",
+            scheduler: BackgroundScheduler,
+            tracked_schedule_config: "TrackedScheduleConfigCreator"
+        ):
         self.prices_client = prices_client
         self.config = config
+        self.scheduler = scheduler
+        self.tracked_schedule_config = tracked_schedule_config
 
-    def run(self, scheduler: BackgroundScheduler):
+    def run(self):
         """
         Triggers the half hourly schedule based on the users configuration based on the Octopus Agile prices for the day
         """
         todays_prices = self.prices_client.get_today()
-
         logging.info(f"Generating schedule for {len(todays_prices)} prices")
+
+        pricing_strategy_class = self.config._pricing_strategy or DefaultPricingStrategy
+
         for price in todays_prices:
+            pricing_strategy_class(self.tracked_schedule_config.get_config()).handle_price(price, todays_prices)
+
             def job(price: Price):
                 def run_price_task():
-                    if self.config._pricing_strategy is None:
-                        pricing_strategy = DefaultPricingStrategy(self.config)
-                        pricing_strategy.handle_price(price=price, prices=todays_prices)
-
-                    else:
-                        pricing_strategy = self.config._pricing_strategy(self.config)
-                        pricing_strategy.handle_price(price=price, prices=todays_prices)
+                    pricing_strategy_class(self.config).handle_price(price, todays_prices)
                     
                 return run_price_task
 
+            logging.debug(f"Added new job for {price.datetime_from}")
+
             # TODO: I can forsee people possibly want to do jobs within these half hourly blocks
             #       but this should be a future feature on request.
-            logging.debug(f"Added new job for {price.datetime_from}")
-            scheduler.add_job(
+            self.scheduler.add_job(
                 func=job(price),
                 trigger='date',
                 run_date=price.datetime_from,
-                misfire_grace_time=2
+                misfire_grace_time=60*15
             )
     
-        logging.info("Schedule generated, waiting for jobs to run...")
+        logging.info("Schedule generated")
+        

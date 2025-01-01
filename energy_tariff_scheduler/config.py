@@ -1,7 +1,9 @@
 import inspect
+import logging
 
 from typing import Callable, Optional, Type
 from pydantic import BaseModel, PositiveInt, field_validator
+from datetime import timedelta
 
 from .prices import Price
 from .schedules import PricingStrategy
@@ -108,3 +110,39 @@ class ScheduleConfig(BaseModel):
         # this is strict for config but not for field classes
         extra="forbid"
     )
+
+class TrackedSchedule:
+    price: Price
+    action: str
+
+    def __init__(self, price: Price, action: str):
+        self.price = price
+        self.action = action
+
+class TrackedScheduleConfigCreator:
+    calls: list[TrackedSchedule]
+    tracked_config: ScheduleConfig
+
+    def __init__(self, config: ScheduleConfig):
+        self.tracked_config = config.model_copy()
+        self.calls = []
+
+        action_when_cheap_inspector = self._tracker("action_when_cheap", self.calls)
+        action_when_expensive_inspector = self._tracker("action_when_expensive", self.calls)
+        setattr(self.tracked_config, "action_when_cheap", action_when_cheap_inspector)
+        setattr(self.tracked_config, "action_when_expensive", action_when_expensive_inspector)
+
+    def get_config(self):
+        return self.tracked_config
+
+    def _tracker(self, action, calls: list[TrackedSchedule]):
+        def func(price: Price):
+            calls.append(TrackedSchedule(price=price, action=action))
+            pass
+        return func
+
+    def log_schedule(self):
+        sorted_calls = sorted(self.calls, key=lambda tracked_schedule: tracked_schedule.price.datetime_from)
+        calls_as_logs = [f"{schedule.price.datetime_from.strftime('%H:%M')}, action: {schedule.action}, price: {schedule.price.value}p/kWh" for schedule in sorted_calls]
+        log_content = "\n".join(calls_as_logs)
+        logging.info(f"\n\nTodays schedule (this includes already passed jobs):\n\n{log_content}\n")
