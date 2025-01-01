@@ -43,3 +43,19 @@ apschedule resolved all of these for me.
 ## Misc
 
 Be wary of circular dependencies in classes.
+
+## Structure
+
+- [prices.py](./prices.py): responsible for fetching data from external APIs and transform for usage based on contracts
+- [schedules.py](./schedules.py): responsible for creating schedules and applying pricing logic
+- [runner.py](./runner.py): responsible for the interface between users and the program
+- [config.py](./config.py): responsible for providing validated user inputted configuration
+
+## Uploading to PyPi
+
+Delete `dist` and `.egg-info`.
+
+```sh
+.venv/bin/python -m build -v
+twine upload dist/*
+```
