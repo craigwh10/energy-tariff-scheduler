@@ -5,7 +5,7 @@ import requests
 
 from energy_tariff_scheduler import PricingStrategy, Price, runner
 
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger("energy_tariff_scheduler").setLevel(logging.DEBUG)
 
 logging.debug("starting")
 

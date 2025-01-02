@@ -1,6 +1,6 @@
 # Using custom price_to_include functions
 
-As touched on in [running first schedule page](./running-first-schedule.md#running-your-first-schedule), this introduces the `number_to_include` configuration parameter, mentioning that it can either be a positive integer value or a custom function, this is going to show you how to use this method to select prices programattically.
+As touched on in [running first schedule page](./running-first-schedule.md#running-your-first-schedule), this introduces the `number_to_include` configuration parameter, mentioning that it can either be a positive integer value or a custom function, this is going to show you how to use this method to select prices programmatically.
 
 The function must always return an integer otherwise it will fail, this integer is the number of prices the pricing strategy will act on.
 

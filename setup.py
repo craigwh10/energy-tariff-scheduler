@@ -9,7 +9,7 @@ with open(readme_path, 'r') as f:
 
 setup(
     name='energy_tariff_scheduler',
-    version='0.0.4',
+    version='0.0.5',
     author='Craig White',
     author_email='dev.craigw@gmail.com',
     description='Schedule actions based on energy tariffs',

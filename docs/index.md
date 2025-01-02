@@ -30,9 +30,9 @@ Here's an example of 11 days and a schedule generated from this library for Octo
 
 ## Example usage
 
-If you want to be featured on here send me a message on [linkedin](https://www.linkedin.com/in/craig-white98/) and I'll get it listed here :)
+If you want to be featured on here make a post on <a href="https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=show-and-tell" target="_blank">Show & Tell</a> and I'll get it listed here :)
 
-- [battery.craigwh.it](https://battery.craigwh.it): Raspberry Pi4b using smart scheduling to do battery arbitrage to keep a server online
+- <a href="https://battery.craigwh.it" target="_blank">battery.craigwh.it</a>: Raspberry Pi4b using smart scheduling to do battery arbitrage to try keep a server online
 
 ## Related links
 

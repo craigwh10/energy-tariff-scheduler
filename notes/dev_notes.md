@@ -52,3 +52,10 @@ Delete `dist` and `.egg-info`.
 .venv/bin/python -m build -v
 twine upload dist/*
 ```
+
+Testing:
+
+```sh
+pip uninstall energy_tariff_scheduler
+pip install dist/energy_tariff_scheduler-0.0.5-py3-none-any.whl
+```

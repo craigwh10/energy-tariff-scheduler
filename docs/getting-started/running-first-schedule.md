@@ -13,7 +13,7 @@
 
 You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then it will keep running, until you exit the program.
 
-This schedule is blocking so it's reccomended to run this in isolated programs, if you really need this to be async raise an <a href="https://github.com/craigwh10/energy-tariff-scheduler/issues/new" target="_blank">raise an issue</a>.
+This schedule is blocking so it's recommended to run this in isolated programs, if you really need this to be async <a href="https://github.com/craigwh10/energy-tariff-scheduler/issues/new" target="_blank">raise an issue</a>.
 
 ## Setting up actions
 
@@ -40,15 +40,14 @@ You can see here in this example that there are two function I have created, one
 
 You can change these methods to do whatever you like, a common example is using a smart plug HTTP API's to make them turn on and off during those periods.
 
-If you now run your script it will stay running and you should see some logs which indicate the progression of your schedule.
+If you now run your script it will stay running and you should see changes happening based on your actions, and if you have logs set to `INFO` you should see some logs which indicate the progression of your schedule as well as the full schedule as shown below:
 
-<div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
-    <a href="../installation" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">&larr; Previous</a>
-    <a href="../custom-prices-to-include" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">Next &rarr;</a>
-</div>
+!!! NOTE
 
-<!-- ```sh
-$ python main.py
+    To turn logs on ensure you `import logging` and set the level like this at the top of your code `logging.getLogger("energy_tariff_scheduler").setLevel(logging.INFO)`
+
+
+```txt
 INFO:root:
 
 Todays schedule (this includes already passed jobs):
@@ -99,6 +98,10 @@ Todays schedule (this includes already passed jobs):
 21:30, action: action_when_expensive, price: 20.37p/kWh
 22:00, action: action_when_expensive, price: 20.16p/kWh
 22:30, action: action_when_expensive, price: 13.65p/kWh
-...
 INFO Schedule generated, waiting for jobs to run... 
-``` -->
+```
+
+<div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
+    <a href="../installation" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">&larr; Previous</a>
+    <a href="../custom-prices-to-include" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">Next &rarr;</a>
+</div>
