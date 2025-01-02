@@ -1,8 +1,10 @@
 import logging
 import requests
 from abc import ABC, abstractmethod
-from pydantic import BaseModel
 from datetime import timezone, datetime
+
+from pydantic import BaseModel
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 class Price(BaseModel):
     value: float
@@ -18,6 +20,30 @@ class PricesClient(ABC):
         pass
 
 class OctopusAgilePricesClient(PricesClient):
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(10))
+    def _request_today(self, date_from: str, date_to: str) -> dict:
+        """
+        Some times the octopus API doesn't return data, this is a retryable function to try and get the data
+        This isn't failsafe, as there could be a persistent issue, which I have seen before, even 6 hours later.
+        """
+        url = f"https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/standard-unit-rates/?period_from={date_from}&period_to={date_to}"
+        response = requests.get(url)
+        response.raise_for_status()
+
+        data_json = response.json()
+
+        logging.debug(f"Full Octopus Agile data: {data_json}")
+
+        if data_json == None:
+            raise ValueError("No data returned from the Octopus Agile API, this is an Octopus API issue, try re-running this in a few minutes")
+        
+        data_json_results = data_json.get("results")
+
+        if data_json_results == None or len(data_json_results) == 0:
+            raise ValueError("Empty or None results returned from the Octopus Agile API, this is an Octopus API issue, try re-running this in a few minutes")
+
+        return data_json_results
+
     def get_today(self) -> list[Price]:
         """
         What this does
@@ -57,23 +83,7 @@ class OctopusAgilePricesClient(PricesClient):
         if (today_date.hour >= 1):
             logging.warning(f"current hour is {today_date.hour}, data includes historical prices, these wont be included in todays run.")
 
-        data = requests.get(
-            f"https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/standard-unit-rates/?period_from={date_from}&period_to={date_to}"
-        )
-
-        # TODO: add retry logic here!!!
-        
-        logging.debug(f"Price data {data.json()}")
-
-        data_json = data.json()
-
-        if data_json == None:
-            raise Exception("No data returned from the Octopus API so can't generate schedule, try running this again in a few minutes.")
-
-        data_json_results = data_json.get("results")
-
-        if data_json_results == None or len(data_json_results) == 0:
-            raise Exception("No data returned from the Octopus API so can't generate schedule, try running this again in a few minutes.")
+        data_json_results = self._request_today(date_from, date_to)
 
         if len(data_json_results) != 46:
             logging.warning("Data is incomplete, not all usual half hourly periods are included")

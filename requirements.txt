@@ -4,3 +4,4 @@ time-machine==2.16.0
 pytest-mock==3.14.0
 python-dateutil==2.9.0.post0
 apscheduler==3.11.0
+tenacity==9.0.0
