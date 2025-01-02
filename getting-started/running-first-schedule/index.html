@@ -503,7 +503,7 @@
 </ul>
 <h2 id="when-does-this-run">When does this run?</h2>
 <p>You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then it will keep running, until you exit the program.</p>
-<p>This schedule is blocking so it's recommended to run this in isolated programs.</p>
+<p>This schedule is blocking, meaning code after the schedule will not be executed, so it's recommended to run this in isolated programs.</p>
 <h2 id="setting-up-actions">Setting up actions</h2>
 <p>In the library we have two available methods that you need to set, <code>action_when_cheap</code> and <code>action_when_expensive</code>, see below a simple example of how this is set up.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># main.py</span>
