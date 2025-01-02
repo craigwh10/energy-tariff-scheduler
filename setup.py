@@ -18,7 +18,8 @@ setup(
         "pydantic==2.10.4",
         "requests==2.32.3",
         "python-dateutil==2.9.0.post0",
-        "apscheduler==3.11.0"
+        "apscheduler==3.11.0",
+        "tenacity==9.0.0"
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
