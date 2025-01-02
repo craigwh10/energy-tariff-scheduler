@@ -42,13 +42,11 @@ class CustomPricingStrategy(PricingStrategy):
 
 def switch_shelly_on_and_alert(price: Price):
     time = price.datetime_from.strftime("%H:%M")
-    logging.info(f"Time: {time}, Action: action_when_cheap, Price: {price.value}p/kWh")
     SMS.send(f"Price is cheap ({price}p/kWh), turning on shelly")
     requests.get("http://<shelly_ip>/relay/0?turn=on")
 
 def switch_shelly_off_and_alert(price: Price):
     time = price.datetime_from.strftime("%H:%M")
-    logging.info(f"Time: {time}, Action: action_when_cheap, Price: {price.value}p/kWh")
     SMS.send(f"Price is expensive ({price}p/kWh), turning off shelly")    
     requests.get("http://<shelly_ip>/relay/0?turn=off")
 

@@ -60,6 +60,8 @@ class OctopusAgilePricesClient(PricesClient):
         data = requests.get(
             f"https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/standard-unit-rates/?period_from={date_from}&period_to={date_to}"
         )
+
+        # TODO: add retry logic here!!!
         
         logging.debug(f"Price data {data.json()}")
 

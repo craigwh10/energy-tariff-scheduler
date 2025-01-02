@@ -49,12 +49,56 @@ If you now run your script it will stay running and you should see some logs whi
 
 <!-- ```sh
 $ python main.py
-INFO Generating schedule for 46 prices
-INFO Time: 00:00, Action: action_when_cheap, Price: 4p/kWh
-INFO Time: 00:30, Action: action_when_cheap, Price: 8p/kWh
-INFO Time: 01:00, Action: action_when_cheap, Price: 18p/kWh
-INFO Time: 01:30, Action: action_when_cheap, Price: 12p/kWh
-INFO Time: 02:00, Action: action_when_expensive, Price: 50p/kWh
+INFO:root:
+
+Todays schedule (this includes already passed jobs):
+
+00:00, action: action_when_expensive, price: 0.0p/kWh
+00:30, action: action_when_expensive, price: 4.2p/kWh
+01:00, action: action_when_expensive, price: 0.0p/kWh
+01:30, action: action_when_cheap, price: -0.84p/kWh
+02:00, action: action_when_expensive, price: 0.21p/kWh
+02:30, action: action_when_cheap, price: -0.315p/kWh
+03:00, action: action_when_cheap, price: -0.0105p/kWh
+03:30, action: action_when_cheap, price: -1.365p/kWh
+04:00, action: action_when_cheap, price: 0.0p/kWh
+04:30, action: action_when_cheap, price: -0.84p/kWh
+05:00, action: action_when_cheap, price: -0.903p/kWh
+05:30, action: action_when_cheap, price: -1.134p/kWh
+06:00, action: action_when_expensive, price: 0.336p/kWh
+06:30, action: action_when_expensive, price: 2.1p/kWh
+07:00, action: action_when_expensive, price: 4.2p/kWh
+07:30, action: action_when_expensive, price: 3.78p/kWh
+08:00, action: action_when_cheap, price: -1.05p/kWh
+08:30, action: action_when_expensive, price: 4.578p/kWh
+09:00, action: action_when_cheap, price: -1.26p/kWh
+09:30, action: action_when_expensive, price: 7.707p/kWh
+10:00, action: action_when_expensive, price: 3.99p/kWh
+10:30, action: action_when_expensive, price: 6.9825p/kWh
+11:00, action: action_when_expensive, price: 6.6255p/kWh
+11:30, action: action_when_expensive, price: 15.162p/kWh
+12:00, action: action_when_expensive, price: 18.9p/kWh
+12:30, action: action_when_expensive, price: 19.866p/kWh
+13:00, action: action_when_expensive, price: 19.95p/kWh
+13:30, action: action_when_expensive, price: 19.152p/kWh
+14:00, action: action_when_expensive, price: 19.74p/kWh
+14:30, action: action_when_expensive, price: 22.47p/kWh
+15:00, action: action_when_expensive, price: 20.16p/kWh
+15:30, action: action_when_expensive, price: 20.58p/kWh
+16:00, action: action_when_expensive, price: 34.923p/kWh
+16:30, action: action_when_expensive, price: 36.54p/kWh
+17:00, action: action_when_expensive, price: 38.6925p/kWh
+17:30, action: action_when_expensive, price: 38.136p/kWh
+18:00, action: action_when_expensive, price: 38.1255p/kWh
+18:30, action: action_when_expensive, price: 37.2855p/kWh
+19:00, action: action_when_expensive, price: 24.633p/kWh
+19:30, action: action_when_expensive, price: 21.735p/kWh
+20:00, action: action_when_expensive, price: 23.52p/kWh
+20:30, action: action_when_expensive, price: 19.74p/kWh
+21:00, action: action_when_expensive, price: 20.58p/kWh
+21:30, action: action_when_expensive, price: 20.37p/kWh
+22:00, action: action_when_expensive, price: 20.16p/kWh
+22:30, action: action_when_expensive, price: 13.65p/kWh
 ...
 INFO Schedule generated, waiting for jobs to run... 
 ``` -->

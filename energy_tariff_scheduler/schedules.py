@@ -60,13 +60,9 @@ class DefaultPricingStrategy(PricingStrategy):
 
         number_of_cheapest_to_include = self._determine_cheapest_to_include(prices)
 
-        time = price.datetime_from.strftime("%H:%M")
-
         if (sorted_position <= number_of_cheapest_to_include - 1):
-            logging.info(f"Time: {time}, Action: action_when_cheap, Price: {price.value}p/kWh")
             self.config.action_when_cheap(price)
         if (sorted_position > number_of_cheapest_to_include - 1):
-            logging.info(f"Time: {time}, Action: action_when_expensive, Price: {price.value}p/kWh")
             self.config.action_when_expensive(price)
 
 class OctopusAgileScheduleProvider(ScheduleProvider):
