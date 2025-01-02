@@ -13,7 +13,7 @@
 
 You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then it will keep running, until you exit the program.
 
-This schedule is blocking so it's recommended to run this in isolated programs, if you really need this to be async <a href="https://github.com/craigwh10/energy-tariff-scheduler/issues/new" target="_blank">raise an issue</a>.
+This schedule is blocking, meaning code after the schedule will not be executed, so it's recommended to run this in isolated programs.
 
 ## Setting up actions
 
