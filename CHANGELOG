@@ -3,3 +3,4 @@
 - Made the initial schedule job run if the current time is within 15 minutes of the job execution time
 - Removed `runners` from module, now just `runner`
 - Now logs the schedule with price, time and what action it ran
+- Retry logic added to Octopus Agile API (this isn't failsafe as sometimes it does fail to return results over long periods)

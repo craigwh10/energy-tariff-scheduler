@@ -30,7 +30,7 @@ class TestOctopusAgilePricesClient:
 
         # ref: https://stackoverflow.com/a/67096545
         monkeypatch.setattr(
-            client._request_today.retry, "stop", stop_after_attempt(0)
+            client._request.retry, "stop", stop_after_attempt(0)
         )
 
         with pytest.raises(RetryError):
@@ -63,7 +63,7 @@ class TestOctopusAgilePricesClient:
         
         client = OctopusAgilePricesClient()
         monkeypatch.setattr(
-            client._request_today.retry, "stop", stop_after_attempt(0)
+            client._request.retry, "stop", stop_after_attempt(0)
         )
 
         client.get_today()
@@ -81,7 +81,7 @@ class TestOctopusAgilePricesClient:
 
         client = OctopusAgilePricesClient()
         monkeypatch.setattr(
-            client._request_today.retry, "stop", stop_after_attempt(0)
+            client._request.retry, "stop", stop_after_attempt(0)
         )
         prices = client.get_today()
 

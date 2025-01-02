@@ -21,7 +21,7 @@ class PricesClient(ABC):
 
 class OctopusAgilePricesClient(PricesClient):
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(10))
-    def _request_today(self, date_from: str, date_to: str) -> dict:
+    def _request(self, date_from: str, date_to: str) -> dict:
         """
         Some times the octopus API doesn't return data, this is a retryable function to try and get the data
         This isn't failsafe, as there could be a persistent issue, which I have seen before, even 6 hours later.
@@ -83,7 +83,7 @@ class OctopusAgilePricesClient(PricesClient):
         if (today_date.hour >= 1):
             logging.warning(f"current hour is {today_date.hour}, data includes historical prices, these wont be included in todays run.")
 
-        data_json_results = self._request_today(date_from, date_to)
+        data_json_results = self._request(date_from, date_to)
 
         if len(data_json_results) != 46:
             logging.warning("Data is incomplete, not all usual half hourly periods are included")
