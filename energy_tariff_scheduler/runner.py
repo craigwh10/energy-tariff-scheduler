@@ -10,7 +10,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 """
 Current tariff support:
-https://craigwh10.github.io/energy-tariff-scheduler/#:~:text=Linkedin%20%2D%20Craig%20White-,Current%20supported%20supplier%20tariffs,-Octopus%20Agile%20Tariff
+https://craigwh10.github.io/energy-tariff-scheduler/#current-supported-supplier-tariffs
 """
 
 class ApScheduleSchedulerFilter(logging.Filter):
