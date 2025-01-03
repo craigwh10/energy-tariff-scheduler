@@ -13,7 +13,7 @@ setup(
     author='Craig White',
     author_email='dev.craigw@gmail.com',
     description='Schedule actions based on energy tariffs',
-    packages=find_packages(exclude=["__tests__"], include=["energy_tariff_scheduler"]),
+    packages=find_packages(exclude=["__tests__", ".env"], include=["energy_tariff_scheduler"]),
     install_requires=[
         "pydantic==2.10.4",
         "requests==2.32.3",

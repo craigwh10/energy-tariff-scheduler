@@ -41,6 +41,10 @@ class OctopusAgilePricesClient(PricesClient):
 
         url = f"https://api.octopus.energy/v1/products/{product_code}/electricity-tariffs/{tariff_code}/standard-unit-rates/?period_from={date_from}&period_to={date_to}"
         response = requests.get(url)
+
+        if response.status_code == 404:
+            raise SystemExit("The tariff code you are on isn't supported by this script, please read https://craigwh10.github.io/energy-tariff-scheduler/common-problems/#possibly-common-octopus-the-runner-isnt-finding-my-tariff-or-product")
+
         response.raise_for_status()
 
         data_json = response.json()

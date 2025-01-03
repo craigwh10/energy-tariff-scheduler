@@ -58,6 +58,7 @@ Testing:
 ```sh
 pip uninstall energy_tariff_scheduler
 pip install dist/energy_tariff_scheduler-0.0.5-py3-none-any.whl
+python ./_test_script.py
 ```
 
 ## Running tests with logs

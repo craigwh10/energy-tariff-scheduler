@@ -4,3 +4,4 @@
 site
 dist
 energy_tariff_scheduler.egg-info
+.env

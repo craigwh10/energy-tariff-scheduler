@@ -5,10 +5,10 @@ from energy_tariff_scheduler import Price, runner
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
 OCTO_ACC_NO = os.getenv('OCTO_ACC_NO')
 OCTO_API_KEY = os.getenv('OCTO_API_KEY')
-
-load_dotenv()
 
 logging.getLogger().setLevel(logging.DEBUG)
 

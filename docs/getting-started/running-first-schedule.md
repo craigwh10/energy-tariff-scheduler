@@ -51,7 +51,7 @@ If you now run your script it will stay running and you should see changes happe
     To turn logs on ensure you `import logging` and set the level like this at the top of your code `logging.getLogger("energy_tariff_scheduler").setLevel(logging.INFO)`
 
 
-```txt
+```log
 INFO:root:
 
 Todays schedule (this includes already passed jobs):
