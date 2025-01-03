@@ -474,10 +474,10 @@
                   
 
 
-<h1 id="using-custom-price_to_include-functions">Using custom price_to_include functions</h1>
+<h1 id="using-custom-price_to_include-functions">Using custom price_to_include functions<a class="headerlink" href="#using-custom-price_to_include-functions" title="Permanent link"></a></h1>
 <p>As touched on in <a href="../running-first-schedule/#running-your-first-schedule">running first schedule page</a>, this introduces the <code>number_to_include</code> configuration parameter, mentioning that it can either be a positive integer value or a custom function, this is going to show you how to use this method to select prices programmatically.</p>
 <p>The function must always return an integer otherwise it will fail, this integer is the number of prices the pricing strategy will act on.</p>
-<h2 id="example">Example</h2>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link"></a></h2>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># main.py</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">energy_tariff_scheduler</span> <span class="kn">import</span> <span class="n">runner</span><span class="p">,</span> <span class="n">Price</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>

@@ -510,8 +510,8 @@
                   
 
 
-<h1 id="running-your-first-schedule">Running your first schedule</h1>
-<h2 id="configuration">Configuration</h2>
+<h1 id="running-your-first-schedule">Running your first schedule<a class="headerlink" href="#running-your-first-schedule" title="Permanent link"></a></h1>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link"></a></h2>
 <ul>
 <li><code>prices_to_include</code> is the number of the cheapest half hourly periods that you want to include<ul>
 <li>this can be a function (as defined in <a href="../custom-prices-to-include/">custom prices to include</a>)</li>
@@ -524,10 +524,10 @@
 <li><code>api_key</code> a secret key that gives the script access to fetch your most recent tariff (do not push this to git or share with anyone)</li>
 <li><code>account_number</code> your account number for a supported supplier and tariff</li>
 </ul>
-<h2 id="when-does-this-run">When does this run?</h2>
+<h2 id="when-does-this-run">When does this run?<a class="headerlink" href="#when-does-this-run" title="Permanent link"></a></h2>
 <p>You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then it will keep running, until you exit the program.</p>
 <p>This schedule is blocking, meaning code after the schedule will not be executed, so it's recommended to run this in isolated programs.</p>
-<h2 id="setting-up-actions">Setting up actions</h2>
+<h2 id="setting-up-actions">Setting up actions<a class="headerlink" href="#setting-up-actions" title="Permanent link"></a></h2>
 <p>In the library we have two available methods that you need to set, <code>action_when_cheap</code> and <code>action_when_expensive</code>, see below a simple example of how this is set up.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># main.py</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">energy_tariff_scheduler</span> <span class="kn">import</span> <span class="n">runner</span><span class="p">,</span> <span class="n">Price</span>

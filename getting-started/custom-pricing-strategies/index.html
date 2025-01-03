@@ -492,12 +492,12 @@
                   
 
 
-<h1 id="using-custom-pricing-strategies">Using custom pricing strategies</h1>
+<h1 id="using-custom-pricing-strategies">Using custom pricing strategies<a class="headerlink" href="#using-custom-pricing-strategies" title="Permanent link"></a></h1>
 <p>By default the scheduler will simply just rank the prices and assign them to the appropriate actions, but you might hit a case where you need something more complex than that, such as if you have a system where constraints are important or if you wanted to introduce another parameter to the scheduling, such as carbon intensity.</p>
-<h2 id="what-are-these">What are these?</h2>
+<h2 id="what-are-these">What are these?<a class="headerlink" href="#what-are-these" title="Permanent link"></a></h2>
 <p>Custom pricing strategies are python classes that you define and pass into the method for the appropriate tariff, in these you can write your own functionality that acts on the prices, this is using a <a href="https://refactoring.guru/design-patterns/strategy">Strategy pattern</a> which injects in the config in runtime so that you can use the values you addtionally passed in.</p>
 <p>For a description of the configuration you can pass in see <a href="../running-first-schedule/#configuration">configuration</a>.</p>
-<h2 id="example-creating-a-custom-pricing-strategy">Example: creating a custom pricing strategy</h2>
+<h2 id="example-creating-a-custom-pricing-strategy">Example: creating a custom pricing strategy<a class="headerlink" href="#example-creating-a-custom-pricing-strategy" title="Permanent link"></a></h2>
 <p>Here I'm going to set up a custom pricing strategy which makes sure:</p>
 <ul>
 <li>I don't ever spend more than 10p/kWh</li>
