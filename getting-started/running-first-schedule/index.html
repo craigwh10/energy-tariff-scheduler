@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://mydomain.org/getting-started/running-first-schedule/">
       
       
-        <link rel="prev" href="../installation/">
+        <link rel="prev" href="../getting-api-key-and-account-no/">
       
       
         <link rel="next" href="../custom-prices-to-include/">
@@ -268,6 +268,27 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-api-key-and-account-no/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting API keys and account numbers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -500,6 +521,8 @@
 <li><code>action_when_cheap</code> is your function that is called when the half hourly period is among the cheapest</li>
 <li><code>action_when_expensive</code> is your function that is called when the half hourly period is more expensive than the cheapest</li>
 <li><code>pricing_strategy</code> is a custom class you can pass in to act on prices in a more complex way (this is covered in <a href="../custom-pricing-strategies/">custom pricing strategies</a>)</li>
+<li><code>api_key</code> a secret key that gives the script access to fetch your most recent tariff (do not push this to git or share with anyone)</li>
+<li><code>account_number</code> your account number for a supported supplier and tariff</li>
 </ul>
 <h2 id="when-does-this-run">When does this run?</h2>
 <p>You can kick off your schedule at any point in the day, and it will ignore the previous half hourly periods before then, once the schedule for the current day is completed then it will keep running, until you exit the program.</p>
@@ -516,10 +539,12 @@
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;expensive&quot;</span><span class="p">,</span> <span class="n">price</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">runner</span><span class="o">.</span><span class="n">run_octopus_agile_tariff_schedule</span><span class="p">(</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  <span class="n">prices_to_include</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  <span class="n">action_when_cheap</span><span class="p">:</span> <span class="n">action_when_cheap</span><span class="p">,</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  <span class="n">action_when_expensive</span><span class="p">:</span> <span class="n">action_when_expensive</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  <span class="n">prices_to_include</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  <span class="n">action_when_cheap</span><span class="o">=</span><span class="n">action_when_cheap</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  <span class="n">action_when_expensive</span><span class="o">=</span><span class="n">action_when_expensive</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;YOUR-API-KEY&quot;</span><span class="p">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  <span class="n">account_number</span><span class="o">=</span><span class="s2">&quot;YOUR-ACCOUNT-NUMBER&quot;</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>You can see here in this example that there are two function I have created, one that runs when the prices are cheap, which in this case will run a simple print in the 12 cheapest half hourly prices of the day and will run a simple print in the expensive other 44 periods of the day.</p>
 <p>You can change these methods to do whatever you like, a common example is using a smart plug HTTP API's to make them turn on and off during those periods.</p>

@@ -267,6 +267,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../getting-started/getting-api-key-and-account-no/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting API keys and account numbers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../getting-started/running-first-schedule/" class="md-nav__link">
         
   
@@ -383,18 +404,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#im-not-seeing-any-logs" class="md-nav__link">
+  <a href="#highly-common-im-not-seeing-any-logs" class="md-nav__link">
     <span class="md-ellipsis">
-      I'm not seeing any logs
+      [Highly common] I'm not seeing any logs
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-runner-wont-start-because-of-the-api-not-returning-data" class="md-nav__link">
+  <a href="#possibly-common-octopus-the-runner-isnt-finding-my-tariff-or-product" class="md-nav__link">
     <span class="md-ellipsis">
-      The runner wont start because of the API not returning data
+      [Possibly common] Octopus: The runner isn't finding my tariff or product
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#less-common-the-runner-wont-start-because-of-the-api-not-returning-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      [Less common] The runner wont start because of the API not returning data
     </span>
   </a>
   
@@ -435,18 +465,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#im-not-seeing-any-logs" class="md-nav__link">
+  <a href="#highly-common-im-not-seeing-any-logs" class="md-nav__link">
     <span class="md-ellipsis">
-      I'm not seeing any logs
+      [Highly common] I'm not seeing any logs
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-runner-wont-start-because-of-the-api-not-returning-data" class="md-nav__link">
+  <a href="#possibly-common-octopus-the-runner-isnt-finding-my-tariff-or-product" class="md-nav__link">
     <span class="md-ellipsis">
-      The runner wont start because of the API not returning data
+      [Possibly common] Octopus: The runner isn't finding my tariff or product
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#less-common-the-runner-wont-start-because-of-the-api-not-returning-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      [Less common] The runner wont start because of the API not returning data
     </span>
   </a>
   
@@ -468,7 +507,7 @@
 
 
 <h1 id="common-problems">Common problems</h1>
-<h2 id="im-not-seeing-any-logs">I'm not seeing any logs</h2>
+<h2 id="highly-common-im-not-seeing-any-logs">[Highly common] I'm not seeing any logs</h2>
 <p>This is likely due to not having configured your logger in your python script, follow the example below:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">logging</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
@@ -476,7 +515,10 @@
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;energy_tariff_scheduler&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 </span></code></pre></div>
-<h2 id="the-runner-wont-start-because-of-the-api-not-returning-data">The runner wont start because of the API not returning data</h2>
+<h2 id="possibly-common-octopus-the-runner-isnt-finding-my-tariff-or-product">[Possibly common] Octopus: The runner isn't finding my tariff or product</h2>
+<p>Currently the logic for finding your tariff is it fetches your account details from your provided account number, finds your most recent tariff, gets the tariff code for it and then tries its best to match the closest product code from the current active products provided by Octopus (where they are non-business type and within Octopus brand), here it's assumed that the product code contains as many characters as possible in the tariff code, such as if your tariff code is <code>E-1R-AGILE-FLEX-22-11-25-C</code> if a product doesn't exist for this it may match <code>AGILE-24-10-01</code>.</p>
+<p>Obviously this isn't foolproof and a big assumption has been made here so expect it to fail, and if it does please raise it <a href="https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues" target="_blank">on the API issues page</a> and provide the logs provided under the debug level, an effort has been made to not log out any sensitive data but please be vigilant not to post any in the case of seeing any.</p>
+<h2 id="less-common-the-runner-wont-start-because-of-the-api-not-returning-data">[Less common] The runner wont start because of the API not returning data</h2>
 <p>This library is build around third party API's, these can fail due to many reasons which are out of this libraries control.</p>
 <p>I wouldn't reccomend spam retrying the script as this could lead to your IP being blacklisted, the script automatically tries to retry the failed call 3 times (with a 10s delay), it could take upwards of a few days for things to get rectified (as it's people on the other end who need to fix it), so just be patient with it and try every hour or so.</p>
 <p>Also, when you see this happen be sure to start a discussion <a href="https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues" target="_blank">on the API issues page</a> to make others aware that this is happening and to help with making the solution more resiliant to these sorts of issues.</p>
