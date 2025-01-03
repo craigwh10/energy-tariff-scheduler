@@ -18,3 +18,4 @@ Format: [https://gist.github.com/juampynr/4c18214a8eb554084e21d6e288a18a2c](http
 ### Fixed
 
 - Made the initial schedule job run if the current time is within 15 minutes of the job execution time
+- Users now have to provide an API key for Octopus runners, this is to get the accurate tariff, previously assumed a single tariff that soon became unavailable.

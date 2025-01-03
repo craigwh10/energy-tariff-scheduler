@@ -8,6 +8,8 @@
 - `action_when_cheap` is your function that is called when the half hourly period is among the cheapest
 - `action_when_expensive` is your function that is called when the half hourly period is more expensive than the cheapest
 - `pricing_strategy` is a custom class you can pass in to act on prices in a more complex way (this is covered in [custom pricing strategies](./custom-pricing-strategies.md))
+- `api_key` a secret key that gives the script access to fetch your most recent tariff (do not push this to git or share with anyone)
+- `account_number` your account number for a supported supplier and tariff
 
 ## When does this run?
 
@@ -30,9 +32,11 @@ def action_when_expensive(price: Price)
     print("expensive", price.value)
 
 runner.run_octopus_agile_tariff_schedule(
-  prices_to_include: 12,
-  action_when_cheap: action_when_cheap,
-  action_when_expensive: action_when_expensive,
+  prices_to_include=12,
+  action_when_cheap=action_when_cheap,
+  action_when_expensive=action_when_expensive,
+  api_key="YOUR-API-KEY",
+  account_number="YOUR-ACCOUNT-NUMBER"
 )
 ```
 

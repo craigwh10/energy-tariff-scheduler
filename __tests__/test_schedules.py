@@ -42,7 +42,7 @@ class TestDefaultPricingStrategy:
     def test_happy_path_with_callable_cheapest_prices_to_include(self):
         def _prices_to_include(prices):
             # only get the count where sum cost is no greater than 15p/kWh
-            # i.e 3.0 + 5.0 + 3.0 + 4.0 = 15 (wont include 8.0)
+            # e.g 3.0 + 5.0 + 3.0 + 4.0 = 15 (wont include 8.0)
 
             total = 0
             count = 0

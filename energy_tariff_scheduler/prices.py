@@ -1,7 +1,10 @@
 import logging
 import requests
+from requests.auth import HTTPBasicAuth
+
 from abc import ABC, abstractmethod
 from datetime import timezone, datetime
+from difflib import SequenceMatcher
 
 from pydantic import BaseModel
 from tenacity import retry, stop_after_attempt, wait_fixed
@@ -20,13 +23,23 @@ class PricesClient(ABC):
         pass
 
 class OctopusAgilePricesClient(PricesClient):
+    def __init__(self, api_key: str = None, account_number: str = None):
+        if api_key == None or account_number == None:
+            raise SystemExit("api_key and account_number must be provided to fetch Octopus Agile prices for your account")
+
+        self.api_key = api_key
+        self.account_number = account_number
+
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(10))
     def _request(self, date_from: str, date_to: str) -> dict:
         """
         Some times the octopus API doesn't return data, this is a retryable function to try and get the data
         This isn't failsafe, as there could be a persistent issue, which I have seen before, even 6 hours later.
         """
-        url = f"https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/standard-unit-rates/?period_from={date_from}&period_to={date_to}"
+
+        tariff_code, product_code = self._get_current_tariff_and_product()
+
+        url = f"https://api.octopus.energy/v1/products/{product_code}/electricity-tariffs/{tariff_code}/standard-unit-rates/?period_from={date_from}&period_to={date_to}"
         response = requests.get(url)
         response.raise_for_status()
 
@@ -43,12 +56,61 @@ class OctopusAgilePricesClient(PricesClient):
             raise ValueError("Empty or None results returned from the Octopus Agile API, this is an Octopus API issue, try re-running this in a few minutes")
 
         return data_json_results
+    
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(10))
+    def _get_current_tariff_and_product(self) -> tuple[str, str]:
+        # it may be that for some accounts, the tariff code isn't agile, we should make the user aware that
+        # this tariff isn't supported at the moment but they can request it
+        url = f"https://api.octopus.energy/v1/accounts/{self.account_number}/"
+        
+        logging.info(f"Getting account details for your account number")
+
+        response = requests.get(url, auth=HTTPBasicAuth(self.api_key, ""))
+        response.raise_for_status()
+
+        account_details = response.json()
+
+        properties = account_details.get("properties")
+        property = properties[0]
+
+        meter_points = property.get("electricity_meter_points")
+        meter_point = meter_points[0]
+
+        agreements = meter_point.get("agreements")
+
+        logging.debug(f"Agreements: {agreements}")
+
+        agreement = [agreement for agreement in agreements if agreement.get("valid_to") == None]
+
+        latest_agreement = agreement[0]
+        latest_tariff_code = latest_agreement.get("tariff_code")
+
+        logging.info(f"Latest tariff code: {latest_tariff_code}")
+
+        url = f"https://api.octopus.energy/v1/products/?brand=OCTOPUS_ENERGY&is_business=False"
+        response = requests.get(url)
+        response.raise_for_status()
+
+        products = response.json()
+
+        logging.debug(f"Full Octopus Agile products: {products}")
+
+        product_results = products.get("results")
+
+        agile_products = [product for product in product_results if product["code"].startswith("AGILE")]
+
+        matched_product = max(agile_products, key=lambda product: SequenceMatcher(None, product["code"], latest_tariff_code).ratio())
+
+        logging.info(f"Matched product: {matched_product} for active tariff code {latest_tariff_code}")
+
+        return latest_tariff_code, matched_product["code"]
 
     def get_today(self) -> list[Price]:
         """
         What this does
         ---
-        - Gets todays data, in utc time order
+        - Gets your current tariff and product
+        - Gets todays data for product and tariff, in utc time order
         - Todays data is made available between 4-8pm the day before
 
         Example response

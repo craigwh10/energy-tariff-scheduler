@@ -59,3 +59,9 @@ Testing:
 pip uninstall energy_tariff_scheduler
 pip install dist/energy_tariff_scheduler-0.0.5-py3-none-any.whl
 ```
+
+## Running tests with logs
+
+```sh
+pytest __tests__/test_prices.py --log-cli-level=DEBUG
+```

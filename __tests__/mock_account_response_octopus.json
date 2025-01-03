@@ -1,0 +1,59 @@
+{
+    "number": "Z-Z343434",
+    "properties": [
+        {
+            "id": 123456,
+            "moved_in_at": "2019-01-05T00:00:00+01:00",
+            "moved_out_at": null,
+            "address_line_1": "1 Test Street",
+            "address_line_2": "",
+            "address_line_3": "Test Town",
+            "town": "",
+            "county": "",
+            "postcode": "ABC 2BC",
+            "electricity_meter_points": [
+                {
+                    "mpan": "1234567890123",
+                    "profile_class": 1,
+                    "consumption_standard": 4000,
+                    "meters": [
+                        {
+                            "serial_number": "ZZ32E324242",
+                            "registers": [
+                                {
+                                    "identifier": "01",
+                                    "rate": "STANDARD",
+                                    "is_settlement_register": true
+                                }
+                            ]
+                        },
+                        {
+                            "serial_number": "ZZ32E324242",
+                            "registers": [
+                                {
+                                    "identifier": "1",
+                                    "rate": "STANDARD",
+                                    "is_settlement_register": true
+                                }
+                            ]
+                        }
+                    ],
+                    "agreements": [
+                        {
+                            "tariff_code": "E-1R-OE-FIX-24M-21-04-29-M",
+                            "valid_from": "2021-05-28T00:00:00+01:00",
+                            "valid_to": "2023-05-28T00:00:00+01:00"
+                        },
+                        {
+                            "tariff_code": "E-1R-AGILE-FLEX-22-11-25-C",
+                            "valid_from": "2023-05-28T00:00:00+01:00",
+                            "valid_to": null
+                        }
+                    ],
+                    "is_export": false
+                }
+            ],
+            "gas_meter_points": []
+        }
+    ]
+}

@@ -46,6 +46,8 @@ logging.getLogger("apscheduler.executors.default").addFilter(
 )
 
 def run_octopus_agile_tariff_schedule(
+        api_key: str,
+        account_number: str,
         prices_to_include: int | Callable[[list[Price]], int],
         action_when_cheap: Callable[[Optional[Price]], None],
         action_when_expensive: Callable[[Optional[Price]], None],
@@ -55,6 +57,8 @@ def run_octopus_agile_tariff_schedule(
     Runs a schedule with half hourly jobs based on the Octopus Agile tariff prices.
     
     Args:
+        api_key: Octopus Energy API key.
+        account_number: Octopus Energy account number.
         prices_to_include: The number of prices to include or a callable that determines the number dynamically from available prices.
         action_when_cheap: Action to execute when the price is considered cheap.
         action_when_expensive: Action to execute when the price is considered expensive.
@@ -95,7 +99,9 @@ def run_octopus_agile_tariff_schedule(
         prices_to_include=5, # 5 opportunties to trigger "action_when_cheap"
         action_when_cheap=switch_shelly_on_and_alert,
         action_when_expensive=switch_shelly_off_and_alert,
-        pricing_strategy=CustomPricingStrategy
+        pricing_strategy=CustomPricingStrategy,
+        api_key="api_key (BROUGHT IN SAFELY)",
+        account_number="account_number (BROUGHT IN SAFELY)"
     )
     ```
     """
@@ -115,7 +121,10 @@ def run_octopus_agile_tariff_schedule(
         )
 
         OctopusAgileScheduleProvider(
-            prices_client=OctopusAgilePricesClient(),
+            prices_client=OctopusAgilePricesClient(
+                api_key=api_key,
+                account_number=account_number
+            ),
             config=config,
             scheduler=continuous_scheduler,
             tracked_schedule_config=tracked_schedule_config

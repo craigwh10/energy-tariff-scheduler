@@ -1,6 +1,6 @@
 # Common problems
 
-## I'm not seeing any logs
+## [Highly common] I'm not seeing any logs
 
 This is likely due to not having configured your logger in your python script, follow the example below:
 
@@ -12,7 +12,13 @@ from energy_tariff_scheduler import PricingStrategy, Price, runner
 logging.getLogger("energy_tariff_scheduler").setLevel(logging.INFO)
 ```
 
-## The runner wont start because of the API not returning data
+## [Possibly common] Octopus: The runner isn't finding my tariff or product
+
+Currently the logic for finding your tariff is it fetches your account details from your provided account number, finds your most recent tariff, gets the tariff code for it and then tries its best to match the closest product code from the current active products provided by Octopus (where they are non-business type and within Octopus brand), here it's assumed that the product code contains as many characters as possible in the tariff code, such as if your tariff code is `E-1R-AGILE-FLEX-22-11-25-C` if a product doesn't exist for this it may match `AGILE-24-10-01`.
+
+Obviously this isn't foolproof and a big assumption has been made here so expect it to fail, and if it does please raise it <a href="https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues" target="_blank">on the API issues page</a> and provide the logs provided under the debug level, an effort has been made to not log out any sensitive data but please be vigilant not to post any in the case of seeing any.
+
+## [Less common] The runner wont start because of the API not returning data
 
 This library is build around third party API's, these can fail due to many reasons which are out of this libraries control.
 

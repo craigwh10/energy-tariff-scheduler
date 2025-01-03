@@ -18,7 +18,7 @@ def action_when_expensive(price: Price)
 
 def prices_to_include(prices: list[Price]):
     # only get the count where sum cost is no greater than 15p/kWh
-    # i.e 3.0 + 5.0 + 3.0 + 4.0 = 15 (wont include 8.0)
+    # e.g if first 4 prices are 3.0 + 5.0 + 3.0 + 4.0 = 15 (it wont include rest)
 
     total = 0
     count = 0
@@ -33,9 +33,11 @@ def prices_to_include(prices: list[Price]):
     
 
 runner.run_octopus_agile_tariff_schedule(
-        prices_to_include: prices_to_include,
-        action_when_cheap: action_when_cheap,
-        action_when_expensive: action_when_expensive,
+    prices_to_include=prices_to_include,
+    action_when_cheap=action_when_cheap,
+    action_when_expensive=action_when_expensive,
+    api_key="YOUR-API-KEY",
+    account_number="YOUR-ACCOUNT-NUMBER"
 )
 ```
 
