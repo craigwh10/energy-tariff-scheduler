@@ -424,18 +424,45 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#octopus-gointelligent" class="md-nav__link">
+  <a href="#initial-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      Octopus Go/Intelligent
+      Initial setup
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#octopus-agile" class="md-nav__link">
+  <a href="#setting-up-your-application" class="md-nav__link">
     <span class="md-ellipsis">
-      Octopus Agile
+      Setting up your application
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-your-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring your application
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#octopus-gointelligent-boilerplate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Octopus Go/Intelligent Boilerplate
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#octopus-agile-boilerplate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Octopus Agile Boilerplate
     </span>
   </a>
   
@@ -476,18 +503,45 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#octopus-gointelligent" class="md-nav__link">
+  <a href="#initial-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      Octopus Go/Intelligent
+      Initial setup
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#octopus-agile" class="md-nav__link">
+  <a href="#setting-up-your-application" class="md-nav__link">
     <span class="md-ellipsis">
-      Octopus Agile
+      Setting up your application
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-your-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring your application
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#octopus-gointelligent-boilerplate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Octopus Go/Intelligent Boilerplate
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#octopus-agile-boilerplate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Octopus Agile Boilerplate
     </span>
   </a>
   
@@ -510,11 +564,15 @@
 
 <h1 id="quick-guide-raspberry-pi-smart-plug-control-using-library">Quick guide: Raspberry Pi smart plug control using Library<a class="headerlink" href="#quick-guide-raspberry-pi-smart-plug-control-using-library" title="Permanent link"></a></h1>
 <p>Ensure first that your Raspberry Pi is WIFI enabled and supports CPython, a good option is a RPI 2W Pico which you can get for around £25 online.</p>
+<h2 id="initial-setup">Initial setup<a class="headerlink" href="#initial-setup" title="Permanent link"></a></h2>
 <ul>
 <li>Connect raspberry pi to laptop</li>
 <li>Connect a micro-hdmi to an external screen from the raspberry pi</li>
 <li>Run setup, remembering your password</li>
 <li>Connect to same WIFI your laptop is on</li>
+</ul>
+<h2 id="setting-up-your-application">Setting up your application<a class="headerlink" href="#setting-up-your-application" title="Permanent link"></a></h2>
+<ul>
 <li>Once it is finished, let the boot sequence run till you see a desktop</li>
 <li>Open "Terminal"</li>
 <li>Type <code>python -v</code>, press enter and check if you are &gt;= 3.10 as this is needed for the package</li>
@@ -522,6 +580,9 @@
 <li>Be sure never to publish .env online or share it with anyone!</li>
 <li>Type <code>pip install energy-tariff-scheduler python-dotenv requests</code>, press enter and let it run, it's okay to install globally on RPI's if you're only running the one thing</li>
 <li>If you aren't, look into python virtual environments</li>
+</ul>
+<h2 id="configuring-your-application">Configuring your application<a class="headerlink" href="#configuring-your-application" title="Permanent link"></a></h2>
+<ul>
 <li>Go back to the desktop once this is complete, and right click <code>.env</code> and open with text editor</li>
 </ul>
 <div class="admonition info">
@@ -545,7 +606,7 @@
 <li>Shelly: https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Switch/</li>
 </ul>
 </div>
-<h2 id="octopus-gointelligent">Octopus Go/Intelligent<a class="headerlink" href="#octopus-gointelligent" title="Permanent link"></a></h2>
+<h2 id="octopus-gointelligent-boilerplate">Octopus Go/Intelligent Boilerplate<a class="headerlink" href="#octopus-gointelligent-boilerplate" title="Permanent link"></a></h2>
 <div class="language-py highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">logging</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span> <span class="nn">requests</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
@@ -579,7 +640,7 @@
 </span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>    <span class="n">is_intelligent</span><span class="o">=</span><span class="kc">True</span>
 </span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="p">)</span>
 </span></code></pre></div>
-<h2 id="octopus-agile">Octopus Agile<a class="headerlink" href="#octopus-agile" title="Permanent link"></a></h2>
+<h2 id="octopus-agile-boilerplate">Octopus Agile Boilerplate<a class="headerlink" href="#octopus-agile-boilerplate" title="Permanent link"></a></h2>
 <div class="language-py highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">logging</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span> <span class="nn">requests</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
