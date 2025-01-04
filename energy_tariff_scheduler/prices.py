@@ -133,9 +133,11 @@ class OctopusPricesClient:
         ---
         - Gets your current tariff and product
         - Gets todays data for product and tariff, in utc time order
-        - Todays data is made available between 4-8pm the day before
+        - Maps to price objects
+        
+        API Behaviour: Todays data is made available between 4-8pm the day before
 
-        Example response
+        API Example prices response:
         ---
         [{
         "value_exc_vat": 23.4,

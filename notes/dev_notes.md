@@ -79,3 +79,26 @@ I've kept the files agnostic to brand but I'll see how this develops in the futu
 When working with functions relating to dates, don't make the mistake I made and call things "get_today" and have the API in there, have a method that takes in the range and let the implementation that is exposed to other classes be specific to what they need.
 
 Keep things opinionated to begin with, if you don't then you'll be trying to make a schema work for something else, for example ScheduleConfig wont be the same for all schedules, it was made with the AgileTariff in mind first, so make it opinionated to that and then figure out if it should be shared again with the rule of 3.
+
+## If you want a pytest mock function to meet a specific spec
+
+```py
+def mock_spec(price):
+    return ''
+
+action_when_cheap = mocker.create_autospec(mock_spec)
+action_when_cheap.__name__ = "action_when_cheap"
+action_when_expensive = mocker.create_autospec(mock_spec)
+action_when_expensive.__name__ = "action_when_cheap"
+```
+
+This is useful for when you validate certain function specifications in pydantic, as Mocks come with their own broad spec that would fail a test.
+
+## Mocking out tenacity retry decorator
+
+```py
+monkeypatch.setattr(
+    # name of method on class with decorator.
+    client.get_accounts_tariff_and_matched_product_code.retry, "stop", stop_after_attempt(1)
+)
+```

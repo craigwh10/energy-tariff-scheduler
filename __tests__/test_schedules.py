@@ -3,6 +3,7 @@ from datetime import datetime
 import sys
 import os
 from datetime import timezone
+from zoneinfo import ZoneInfo
 
 from pydantic import BaseModel
 from pytest_mock import MockerFixture
@@ -11,9 +12,9 @@ import time_machine
 module_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../energy_tariff_scheduler/')) 
 sys.path.insert(0, module_dir)
 
-from energy_tariff_scheduler.schedules import PricingStrategy, DefaultPricingStrategy, OctopusAgileScheduleProvider
+from energy_tariff_scheduler.schedules import PricingStrategy, DefaultPricingStrategy, OctopusAgileScheduleProvider, OctopusGoScheduleProvider
 from unittest.mock import Mock
-from energy_tariff_scheduler.config import ScheduleConfig
+from energy_tariff_scheduler.config import CompleteConfig
 from energy_tariff_scheduler.prices import Price
 
 class TestDefaultPricingStrategy:
@@ -104,7 +105,7 @@ class TestOctopusAgileScheduleProvider:
     @time_machine.travel(datetime(2024, 3, 24, 0, 30, tzinfo=timezone.utc))
     def test_happy_path(self, mocker: MockerFixture):
         mock_prices_client = Mock()
-        mock_prices_client.get_today.return_value = [
+        mock_prices_client.get_prices_for_users_tariff_and_product.return_value = [
             Price(value=8.0, datetime_from=datetime(2024, 3, 24, 0, 30, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 1, 0, tzinfo=timezone.utc)),
             Price(value=4.0, datetime_from=datetime(2024, 3, 24, 1, 0, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 1, 30, tzinfo=timezone.utc)),
             Price(value=3.0, datetime_from=datetime(2024, 3, 24, 1, 30, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 2, 0, tzinfo=timezone.utc)),
@@ -139,7 +140,7 @@ class TestOctopusAgileScheduleProvider:
     @time_machine.travel(datetime(2024, 3, 24, 0, 30, tzinfo=timezone.utc))
     def test_happy_path_with_custom_pricing_strategy(self, mocker: MockerFixture):
         mock_prices_client = Mock()
-        mock_prices_client.get_today.return_value = [
+        mock_prices_client.get_prices_for_users_tariff_and_product.return_value = [
             Price(value=8.0, datetime_from=datetime(2024, 3, 24, 0, 30, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 1, 0, tzinfo=timezone.utc)),
             Price(value=4.0, datetime_from=datetime(2024, 3, 24, 1, 0, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 1, 30, tzinfo=timezone.utc)),
             Price(value=3.0, datetime_from=datetime(2024, 3, 24, 1, 30, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 2, 0, tzinfo=timezone.utc)),
@@ -148,7 +149,7 @@ class TestOctopusAgileScheduleProvider:
         ]
 
         class CustomPricingStrategy(PricingStrategy):
-            def __init__(self, config: ScheduleConfig):
+            def __init__(self, config: CompleteConfig):
                 self.config = config
             def handle_price(self, price: Price, prices: list[Price]):
                 if price.value < 5.0:
@@ -179,45 +180,98 @@ class TestOctopusAgileScheduleProvider:
         provider.run()
     
         assert mock_schedule.add_job.call_count == 5
+    
+class TestOctopusGoScheduleProvider:
+    @time_machine.travel(datetime(2025, 1, 4, 0, 0, tzinfo=timezone.utc))
+    def test_non_intelligent_run(self, mocker: MockerFixture):
+        mock_prices_client = Mock()
+        mock_prices_client.get_prices_for_users_tariff_and_product.return_value = [
+            Price(
+                value=27,
+                datetime_from=datetime(2025, 1, 4, 5, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 5, 0, 30, tzinfo=timezone.utc)),
+            Price(
+                value=6,
+                datetime_from=datetime(2025, 1, 4, 0, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 4, 5, 30, tzinfo=timezone.utc)
+            ),
+            Price(
+                value=27,
+                datetime_from=datetime(2025, 1, 3, 5, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 4, 0, 30, tzinfo=timezone.utc)
+            ),
+        ]
 
-# @time_machine.travel(datetime(2024, 3, 24, 0, 30, tzinfo=timezone.utc))
-# def test_happy_path_with_custom_pricing_strategy2(mocker: MockerFixture):
-#     mock_prices_client = Mock()
-#     mock_prices_client.get_today.return_value = [
-#         Price(value=8.0, datetime_from=datetime(2024, 3, 24, 0, 30, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 1, 0, tzinfo=timezone.utc)),
-#         Price(value=4.0, datetime_from=datetime(2024, 3, 24, 1, 0, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 1, 30, tzinfo=timezone.utc)),
-#         Price(value=3.0, datetime_from=datetime(2024, 3, 24, 1, 30, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 2, 0, tzinfo=timezone.utc)),
-#         Price(value=5.0, datetime_from=datetime(2024, 3, 24, 2, 0, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 2, 30, tzinfo=timezone.utc)),
-#         Price(value=3.0, datetime_from=datetime(2024, 3, 24, 2, 30, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 3, 0, tzinfo=timezone.utc))
-#     ]
+        class MockConfig:
+            is_intelligent = False
+            prices_to_include = 2
+            action_when_cheap = Mock()
+            action_when_expensive = Mock()
+            _pricing_strategy = None
 
-#     class CustomPricingStrategy(PricingStrategy):
-#         def __init__(self, config: ScheduleConfig):
-#             self.config = config
-#         def handle_price(self, price: Price, prices: list[Price]):
-#             if price.value < 5.0:
-#                 self.config.action_when_cheap(price)
-#             else:
-#                 self.config.action_when_expensive(price)
-#     from typing import Any
+        mock_schedule = mocker.MagicMock()
+        mock_add_job = mocker.MagicMock(return_value="mocked result")
 
-#     def mock_method(price: Price):
-#         pass
+        mock_config = MockConfig()
+        
+        mock_tracker_config = mocker.MagicMock()
+        mock_tracker_config.get_config.return_value = mock_config
 
-#     mock_config = ScheduleConfig(
-#         prices_to_include=2,
-#         action_when_cheap=mock_method,
-#         action_when_expensive=mock_method,
-#     ).add_custom_pricing_strategy(
-#         CustomPricingStrategy,
-#     )
+        mock_schedule.add_job = mock_add_job
 
-#     mock_schedule = mocker.MagicMock()
-#     mock_function = mocker.MagicMock(return_value="mocked result")
+        provider = OctopusGoScheduleProvider(
+            mock_prices_client, mock_config, mock_schedule, mock_tracker_config
+        )
 
-#     mock_schedule.add_job = mock_function
+        provider.run()
+    
+        # should only generate a day of 15 min schedules 
+        assert mock_add_job.call_args_list[0][1]['run_date'] == datetime(2025, 1, 4, 0, 0, tzinfo=ZoneInfo("GMT"))
+        assert mock_add_job.call_args_list[-1][1]['run_date'] == datetime(2025, 1, 4, 23, 45, tzinfo=ZoneInfo("GMT"))
 
-#     provider = OctopusAgileScheduleProvider(mock_prices_client, mock_config)
-#     provider.run(mock_schedule)
+    @time_machine.travel(datetime(2025, 1, 4, 0, 0, tzinfo=timezone.utc))
+    def test_intelligent_run(self, mocker: MockerFixture):
+        mock_prices_client = Mock()
+        mock_prices_client.get_prices_for_users_tariff_and_product.return_value = [
+            Price(
+                value=7.0,
+                datetime_from=datetime(2025, 1, 4, 23, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 5, 5, 30, tzinfo=timezone.utc)),
+            Price(
+                value=43.0,
+                datetime_from=datetime(2025, 1, 4, 5, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 4, 23, 30, tzinfo=timezone.utc)
+            ),
+            Price(
+                value=7.0,
+                datetime_from=datetime(2025, 1, 3, 23, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 4, 5, 30, tzinfo=timezone.utc)
+            ),
+        ]
 
-#     assert mock_schedule.add_job.call_count == 5
+        class MockConfig:
+            is_intelligent = True
+            prices_to_include = 2
+            action_when_cheap = Mock()
+            action_when_expensive = Mock()
+            _pricing_strategy = None
+
+        mock_schedule = mocker.MagicMock()
+        mock_add_job = mocker.MagicMock(return_value="mocked result")
+
+        mock_config = MockConfig()
+        
+        mock_tracker_config = mocker.MagicMock()
+        mock_tracker_config.get_config.return_value = mock_config
+
+        mock_schedule.add_job = mock_add_job
+
+        provider = OctopusGoScheduleProvider(
+            mock_prices_client, mock_config, mock_schedule, mock_tracker_config
+        )
+
+        provider.run()
+    
+        # should only generate a day of 15 min schedules 
+        assert mock_add_job.call_args_list[0][1]['run_date'] == datetime(2025, 1, 4, 0, 0, tzinfo=ZoneInfo("GMT"))
+        assert mock_add_job.call_args_list[-1][1]['run_date'] == datetime(2025, 1, 4, 23, 45, tzinfo=ZoneInfo("GMT"))

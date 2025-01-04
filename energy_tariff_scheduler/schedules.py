@@ -83,29 +83,31 @@ class OctopusGoScheduleProvider(ScheduleProvider):
         self.tracked_schedule_config = tracked_schedule_config
         self.config = config
 
-    def _interpolate_15_minutely_price_data(self, price_data: list[Price]) -> list[Price]:
+    def _interpolate_15_minutely_price_data_intelligent_tariff(self, price_data: list[Price]) -> list[Price]:
         """
-        Will convert the three prices into 15 min intervals only containing today.
+        Will convert the three prices into 15 min intervals only containing min and max times and what's inbetween.
         """
-        # We want to generate 15 minute intervals between the datetime_from and datetime_to for each of the prices
-        sorted_prices = sorted(price_data, key=lambda obj: obj.datetime_from)
+        # prices arrive latest first
 
-        sorted_prices[0] = Price(
-            value=sorted_prices[0].value,
-            datetime_from=sorted_prices[0].datetime_from.replace(hour=0, minute=0),
-            datetime_to=sorted_prices[0].datetime_from
+        if len(price_data) != 3:
+            raise SystemExit(f"Go (Intelligent) Tariff has returned {len(price_data)} prices not 3, this is unexpected, please report this to https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues with logs")
+
+        price_data[0] = Price(
+            value=price_data[0].value,
+            datetime_from=price_data[0].datetime_from,
+            datetime_to=price_data[0].datetime_to.replace(day=price_data[0].datetime_to.day - 1, hour=23, minute=45),
         )
 
-        sorted_prices[-1] = Price(
-            value=sorted_prices[-1].value,
-            datetime_from=sorted_prices[-1].datetime_to,
-            datetime_to=sorted_prices[-1].datetime_to.replace(hour=0, minute=0)
+        price_data[-1] = Price(
+            value=price_data[-1].value,
+            datetime_from=price_data[-1].datetime_to.replace(day=price_data[-1].datetime_from.day + 1, hour=0, minute=0),
+            datetime_to=price_data[-1].datetime_to
         )
         
         new_price_data = []
         for price in price_data:
             intervals_to_generate = (price.datetime_to - price.datetime_from).total_seconds() / 60 / 15
-            for i in range(int(intervals_to_generate)):
+            for i in range(int(intervals_to_generate) + 1):
                 new_price_data.append(
                     Price(
                         value=price.value,
@@ -114,10 +116,61 @@ class OctopusGoScheduleProvider(ScheduleProvider):
                     )
                 )
 
-        return new_price_data
+        return sorted(new_price_data, key=lambda obj: obj.datetime_from)
+    
+    def _interpolate_15_minutely_price_data_non_intelligent_tariff(self, price_data: list[Price]) -> list[Price]:
+        """
+        Will convert the three prices into 15 min intervals only containing min and max times and what's inbetween.
+        """
+        # prices arrive latest first
+
+        if len(price_data) != 3:
+            raise SystemExit(f"Go (Regular) Tariff has returned {len(price_data)} prices not 3, this is unexpected, please report this to https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues with logs")
+
+        date_now = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+
+        new_price_data = []
+
+        # will only be one low price in data returned
+        lowest_price = min(price_data, key=lambda p: p.value)
+
+        # will be two high prices...
+        yesterday_high_price = price_data[-1]
+        today_high_price = price_data[0]
+
+        ## 00:00 - 00:30 (high price) - 0.5 hours
+        for i in range(2 + 1):
+            new_price_data.append(
+                Price(
+                    value=yesterday_high_price.value,
+                    datetime_from=date_now.replace(hour=0, minute=i*15),
+                    datetime_to=date_now.replace(hour=0, minute=(i+1)*15)
+                )
+            )
+
+        ## 00:30 - 05:30 (low price) - 5 hours
+        for i in range(20 + 1):
+            new_price_data.append(
+                Price(
+                    value=lowest_price.value,
+                    datetime_from=date_now.replace(hour=0, minute=15) + timedelta(minutes=i*15),
+                    datetime_to=date_now.replace(hour=0, minute=30) + timedelta(minutes=(i+1)*15)
+                )
+            )
+        
+        ## 05:30 - 23:45 (high price) - 18:15 hours
+        for i in range(73 + 1):
+            new_price_data.append(
+                Price(
+                    value=today_high_price.value,
+                    datetime_from=date_now.replace(hour=5, minute=30) + timedelta(minutes=i*15),
+                    datetime_to=date_now.replace(hour=5, minute=45) + timedelta(minutes=(i+1)*15)
+                )
+            )
+     
+        return sorted(new_price_data, key=lambda obj: obj.datetime_from)
 
     def run(self):
-        # In intelligent go/go land their days are between 5:30 and 5:30 in order to only get the two prices for the day
         today_date = datetime.now(timezone.utc)
 
         date_from = (datetime(
@@ -142,7 +195,12 @@ class OctopusGoScheduleProvider(ScheduleProvider):
             product_prefix=product_prefix, date_from=date_from, date_to=date_to
         )
 
-        todays_interpolated_prices = self._interpolate_15_minutely_price_data(todays_prices)
+
+        todays_interpolated_prices = (
+            self._interpolate_15_minutely_price_data_intelligent_tariff(todays_prices)
+            if self.config.is_intelligent == True
+            else self._interpolate_15_minutely_price_data_non_intelligent_tariff(todays_prices)
+        )
 
         logging.info(f"Generating schedule for {len(todays_interpolated_prices)} prices")
 

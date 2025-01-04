@@ -17,9 +17,10 @@ sys.path.insert(0, module_dir)
 
 london_tz = ZoneInfo("Europe/London")
 
-from energy_tariff_scheduler.prices import OctopusAgilePricesClient
+from energy_tariff_scheduler.config import OctopusAPIAuthConfig
+from energy_tariff_scheduler.prices import OctopusPricesClient, OctopusCurrentTariffAndProductClient
 
-class TestOctopusAgilePricesClient:
+class TestOctopusPricesClient:
     # def test_no_return_from_api(self, mocker, monkeypatch):
     #     mock_response = Mock()
     #     mock_response.status_code = 200
@@ -72,23 +73,9 @@ class TestOctopusAgilePricesClient:
     #     assert spy.call_count == 3
 
     @time_machine.travel(datetime(1985, 10, 26, 0, 0, tzinfo=london_tz))
-    def test_happy_path(self, mocker: MockerFixture, monkeypatch):
-        mock_account_response = Mock()
-        mock_account_response.status_code = 200
-
-        mock_products_response = Mock()
-        mock_products_response.status_code = 200
-
+    def test_get_prices(self, mocker: MockerFixture):
         mock_prices_response = Mock()
         mock_prices_response.status_code = 200
-
-        with open("./__tests__/mock_account_response_octopus.json") as f:
-            mock_account = json.load(f)
-            mock_account_response.json.return_value = mock_account
-
-        with open("./__tests__/mock_products_response_octopus.json") as f:
-            mock_products = json.load(f)
-            mock_products_response.json.return_value = mock_products
 
         with open("./__tests__/mock_prices_response_octopus.json") as f:
             mock_prices = json.load(f)
@@ -96,25 +83,54 @@ class TestOctopusAgilePricesClient:
 
         mock_get = mocker.patch('requests.get')
 
-        mock_get.side_effect = [mock_account_response, mock_products_response, mock_prices_response]
-    
-        client = OctopusAgilePricesClient(
-            api_key="mock_api_key",
-            account_number="mock_account_number"
+        mock_get.side_effect = [mock_prices_response]
+
+        class MockOctopusCurrentTariffAndProductClient:
+            def get_accounts_tariff_and_matched_product_code(self, product_code_prefix: str):
+                return "E-1R-AGILE-FLEX-22-11-25-C", "AGILE-24-10-01"
+
+        client = OctopusPricesClient(
+            auth_config=OctopusAPIAuthConfig(
+                api_key="mock_api_key",
+                account_number="mock_account_number"
+            ),
+            tariff_and_product_client=MockOctopusCurrentTariffAndProductClient()
         )
 
-        monkeypatch.setattr(
-            client._request.retry, "stop", stop_after_attempt(1)
-        )
-        monkeypatch.setattr(
-            client._get_current_tariff_and_product.retry, "stop", stop_after_attempt(1)
-        )
-
-        prices = client.get_today()
+        prices = client.get_prices("AGILE-24-10-01", "E-1R-AGILE-FLEX-22-11-25-C", "2023-03-26T00:00:00Z", "2023-03-26T23:59:59Z")
 
         assert len(prices) == 46
 
-    def test_get_current_tariff_and_product(self, mocker: MockerFixture, monkeypatch):
+    def test_get_prices_for_users_tariff_and_product(self, mocker, monkeypatch):
+        mock_prices_response = Mock()
+        mock_prices_response.status_code = 200
+
+        with open("./__tests__/mock_prices_response_octopus.json") as f:
+            mock_prices = json.load(f)
+            mock_prices_response.json.return_value = mock_prices
+
+        mock_get = mocker.patch('requests.get')
+
+        mock_get.side_effect = [mock_prices_response]
+
+        class MockOctopusCurrentTariffAndProductClient:
+            def get_accounts_tariff_and_matched_product_code(self, product_code_prefix: str):
+                return "E-1R-AGILE-FLEX-22-11-25-C", "AGILE-24-10-01"
+
+        client = OctopusPricesClient(
+            auth_config=OctopusAPIAuthConfig(
+                api_key="mock_api_key",
+                account_number="mock_account_number"
+            ),
+            tariff_and_product_client=MockOctopusCurrentTariffAndProductClient()
+        )
+
+        prices = client.get_prices_for_users_tariff_and_product("AGILE", datetime(2023, 3, 26, 0, 0, tzinfo=london_tz), datetime(2023, 3, 26, 23, 59, 59, tzinfo=london_tz))
+
+        assert len(prices) == 46
+
+class TestOctopusCurrentTariffAndProductClient:
+   def test_get_current_tariff_and_product(self, mocker: MockerFixture, monkeypatch):
         mock_account_response = Mock()
         mock_account_response.status_code = 200
 
@@ -133,16 +149,14 @@ class TestOctopusAgilePricesClient:
 
         mock_get.side_effect = [mock_account_response, mock_products_response]
 
-        client = OctopusAgilePricesClient(
-            api_key="mock_api_key",
-            account_number="mock_account_number"
+        client = OctopusCurrentTariffAndProductClient(
+            auth_config=OctopusAPIAuthConfig(
+                api_key="mock_api_key",
+                account_number="mock_account_number"
+            )
         )
 
-        monkeypatch.setattr(
-            client._get_current_tariff_and_product.retry, "stop", stop_after_attempt(1)
-        )
-
-        tariff, product = client._get_current_tariff_and_product()
+        tariff, product = client.get_accounts_tariff_and_matched_product_code("AGILE")
 
         assert tariff == "E-1R-AGILE-FLEX-22-11-25-C"
         assert product == "AGILE-24-10-01" # this shows the fuzzy matching is working
