@@ -8,7 +8,7 @@ Custom pricing strategies are python classes that you define and pass into the m
 
 For a description of the configuration you can pass in see [configuration](./running-first-schedule.md#configuration).
 
-## Example: creating a custom pricing strategy
+## Example: creating a custom pricing strategy (Octopus Agile)
 
 Here I'm going to set up a custom pricing strategy which makes sure:
 

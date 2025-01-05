@@ -1,6 +1,6 @@
 # Getting API keys and account numbers
 
-## [03/01/2025] Octopus
+## [03/01/2025] Octopus Customers
 
 Go to <a href="https://octopus.energy" target="_blank">octopus.energy</a> and sign in, then follow these steps after clicking the menu button on the home page.
 

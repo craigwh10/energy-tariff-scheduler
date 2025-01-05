@@ -4,7 +4,7 @@ As touched on in [running first schedule page](./running-first-schedule.md#runni
 
 The function must always return an integer otherwise it will fail, this integer is the number of prices the pricing strategy will act on.
 
-## Example
+## Example (Octopus Agile)
 
 ```python
 # main.py
