@@ -36,6 +36,6 @@ Format: [https://gist.github.com/juampynr/4c18214a8eb554084e21d6e288a18a2c](http
 
 ### Changed
 
-### Fixed
+- Removed interpolations, jobs for Go and Intelligent Go now only trigger during price boundaries
 
-- Made interpolations for go and intelligent go stick within day boundaries
+### Fixed
