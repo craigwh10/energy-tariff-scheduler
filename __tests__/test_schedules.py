@@ -246,10 +246,10 @@ class TestOctopusGoScheduleProvider:
         ]
 
         class MockJob:
-            def __init__(self, run_date: str):
-                self.run_date = run_date
+            def __init__(self, next_run_time: str):
+                self.next_run_time = next_run_time
 
-            run_date: str
+            next_run_time: str
 
         mock_schedule.get_jobs.return_value = [
             MockJob(
@@ -337,10 +337,10 @@ class TestOctopusGoScheduleProvider:
         ]
 
         class MockJob:
-            def __init__(self, run_date: str):
-                self.run_date = run_date
+            def __init__(self, next_run_time: str):
+                self.next_run_time = next_run_time
 
-            run_date: str
+            next_run_time: str
 
         mock_schedule.get_jobs.return_value = [
             MockJob(
