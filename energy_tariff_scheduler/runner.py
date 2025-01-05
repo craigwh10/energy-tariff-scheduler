@@ -52,7 +52,6 @@ def run_octopus_go_tariff_schedule(
         action_when_expensive: Callable[[Optional[Price]], None],
         pricing_strategy: Optional[Type[PricingStrategy]] = DefaultPricingStrategy,
         is_intelligent: bool = False,
-        prices_to_include: int | Callable[[list[Price]], int] | None = None,
 ):
     """
     Runs a schedule with half hourly jobs based on the Octopus Go tariff prices.
@@ -60,7 +59,6 @@ def run_octopus_go_tariff_schedule(
     Args:
         api_key: Octopus Energy API key.
         account_number: Octopus Energy account number.
-        prices_to_include: The number of prices to include or a callable that determines the number dynamically from available prices.
         action_when_cheap: Action to execute when the price is in cheap period of go.
         action_when_expensive: Action to execute when the price is in expensive period of go.
         pricing_strategy: Custom pricing strategy to handle the prices.
@@ -72,7 +70,7 @@ def run_octopus_go_tariff_schedule(
     def set_daily_schedule() -> list[str]:
         # Go: 00:30 - 05:30, Intelligent: 11:30 - 5:30, people aren't encouraged to choose price amounts here as they're fixed*.
         # I have heard that intelligent can sometimes give more, but it's rare, not handling this.
-        prices_to_include_for_go = prices_to_include or 48 if is_intelligent else 40
+        prices_to_include_for_go = 2 if is_intelligent else 1
         config = OctopusGoScheduleConfig(
             prices_to_include=prices_to_include_for_go,
             action_when_cheap=action_when_cheap,

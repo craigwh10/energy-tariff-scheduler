@@ -20,6 +20,8 @@ Here's an example of 11 days and a schedule generated from this library for Octo
 
 ## Current supported supplier tariffs
 
+Currently each of these tariffs only support import pricings.
+
 - Octopus Agile Tariff
 - Octopus Go (EV Tariff)
 - Intelligent Octopus Go (Optimised EV Tariff)

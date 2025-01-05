@@ -3,9 +3,7 @@ from datetime import datetime
 import sys
 import os
 from datetime import timezone
-from zoneinfo import ZoneInfo
 
-from pydantic import BaseModel
 from pytest_mock import MockerFixture
 import time_machine
 
@@ -183,7 +181,7 @@ class TestOctopusAgileScheduleProvider:
     
 class TestOctopusGoScheduleProvider:
     @time_machine.travel(datetime(2025, 1, 4, 0, 0, tzinfo=timezone.utc))
-    def test_non_intelligent_run(self, mocker: MockerFixture):
+    def test_non_intelligent_run_over_two_days(self, mocker: MockerFixture):
         mock_prices_client = Mock()
         mock_prices_client.get_prices_for_users_tariff_and_product.return_value = [
             Price(
@@ -224,13 +222,57 @@ class TestOctopusGoScheduleProvider:
         )
 
         provider.run()
-    
-        # should only generate a day of 15 min schedules 
-        assert mock_add_job.call_args_list[0][1]['run_date'] == datetime(2025, 1, 4, 0, 0, tzinfo=ZoneInfo("GMT"))
-        assert mock_add_job.call_args_list[-1][1]['run_date'] == datetime(2025, 1, 4, 23, 45, tzinfo=ZoneInfo("GMT"))
+
+        assert mock_add_job.call_count == 3
+
+        time_machine.travel(datetime(2025, 1, 5, 0, 0, tzinfo=timezone.utc))
+
+        mock_prices_client.get_prices_for_users_tariff_and_product.return_value = [
+            Price(
+                value=27,
+                datetime_from=datetime(2025, 1, 5, 5, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 6, 0, 30, tzinfo=timezone.utc)
+            ),
+            Price(
+                value=6,
+                datetime_from=datetime(2025, 1, 5, 0, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 5, 5, 30, tzinfo=timezone.utc)
+            ),
+            Price(
+                value=27,
+                datetime_from=datetime(2025, 1, 4, 5, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 5, 0, 30, tzinfo=timezone.utc)
+            ),
+        ]
+
+        class MockJob:
+            def __init__(self, run_date: str):
+                self.run_date = run_date
+
+            run_date: str
+
+        mock_schedule.get_jobs.return_value = [
+            MockJob(
+                datetime(2025, 1, 4, 5, 30, tzinfo=timezone.utc)
+            ),
+            MockJob(
+                datetime(2025, 1, 4, 0, 30, tzinfo=timezone.utc)
+            ),
+            MockJob(
+                datetime(2025, 1, 3, 23, 30, tzinfo=timezone.utc)
+            )
+        ]
+
+        provider = OctopusGoScheduleProvider(
+            mock_prices_client, mock_config, mock_schedule, mock_tracker_config
+        )
+
+        provider.run()  
+
+        assert mock_add_job.call_count == 5
 
     @time_machine.travel(datetime(2025, 1, 4, 0, 0, tzinfo=timezone.utc))
-    def test_intelligent_run(self, mocker: MockerFixture):
+    def test_intelligent_run_over_two_days(self, mocker: MockerFixture):
         mock_prices_client = Mock()
         mock_prices_client.get_prices_for_users_tariff_and_product.return_value = [
             Price(
@@ -272,6 +314,50 @@ class TestOctopusGoScheduleProvider:
 
         provider.run()
     
-        # should only generate a day of 15 min schedules 
-        assert mock_add_job.call_args_list[0][1]['run_date'] == datetime(2025, 1, 4, 0, 0, tzinfo=ZoneInfo("GMT"))
-        assert mock_add_job.call_args_list[-1][1]['run_date'] == datetime(2025, 1, 4, 23, 45, tzinfo=ZoneInfo("GMT"))
+        assert mock_add_job.call_count == 3
+
+        time_machine.travel(datetime(2025, 1, 5, 0, 0, tzinfo=timezone.utc))
+
+        mock_prices_client.get_prices_for_users_tariff_and_product.return_value = [
+            Price(
+                value=7.0,
+                datetime_from=datetime(2025, 1, 5, 23, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 6, 5, 30, tzinfo=timezone.utc)
+            ),
+            Price(
+                value=48.0,
+                datetime_from=datetime(2025, 1, 5, 5, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 5, 23, 30, tzinfo=timezone.utc)
+            ),
+            Price(
+                value=7.0,
+                datetime_from=datetime(2025, 1, 4, 23, 30, tzinfo=timezone.utc),
+                datetime_to=datetime(2025, 1, 5, 5, 30, tzinfo=timezone.utc)
+            ),
+        ]
+
+        class MockJob:
+            def __init__(self, run_date: str):
+                self.run_date = run_date
+
+            run_date: str
+
+        mock_schedule.get_jobs.return_value = [
+            MockJob(
+                datetime(2025, 1, 4, 23, 30, tzinfo=timezone.utc)
+            ),
+            MockJob(
+                datetime(2025, 1, 4, 5, 30, tzinfo=timezone.utc)
+            ),
+            MockJob(
+                datetime(2025, 1, 3, 23, 30, tzinfo=timezone.utc)
+            )
+        ]
+
+        provider = OctopusGoScheduleProvider(
+            mock_prices_client, mock_config, mock_schedule, mock_tracker_config
+        )
+
+        provider.run()  
+
+        assert mock_add_job.call_count == 5

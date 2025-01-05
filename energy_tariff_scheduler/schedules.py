@@ -83,93 +83,6 @@ class OctopusGoScheduleProvider(ScheduleProvider):
         self.tracked_schedule_config = tracked_schedule_config
         self.config = config
 
-    def _interpolate_15_minutely_price_data_intelligent_tariff(self, price_data: list[Price]) -> list[Price]:
-        """
-        Will convert the three prices into 15 min intervals only containing min and max times and what's inbetween.
-        """
-        # prices arrive latest first
-
-        if len(price_data) != 3:
-            raise SystemExit(f"Go (Intelligent) Tariff has returned {len(price_data)} prices not 3, this is unexpected, please report this to https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues with logs")
-
-        price_data[0] = Price(
-            value=price_data[0].value,
-            datetime_from=price_data[0].datetime_from,
-            datetime_to=price_data[0].datetime_to.replace(day=price_data[0].datetime_to.day - 1, hour=23, minute=45),
-        )
-
-        price_data[-1] = Price(
-            value=price_data[-1].value,
-            datetime_from=price_data[-1].datetime_to.replace(day=price_data[-1].datetime_from.day + 1, hour=0, minute=0),
-            datetime_to=price_data[-1].datetime_to
-        )
-        
-        new_price_data = []
-        for price in price_data:
-            intervals_to_generate = (price.datetime_to - price.datetime_from).total_seconds() / 60 / 15
-            for i in range(int(intervals_to_generate) + 1):
-                new_price_data.append(
-                    Price(
-                        value=price.value,
-                        datetime_from=price.datetime_from + timedelta(minutes=i*15),
-                        datetime_to=price.datetime_from + timedelta(minutes=(i+1)*15)
-                    )
-                )
-
-        return sorted(new_price_data, key=lambda obj: obj.datetime_from)
-    
-    def _interpolate_15_minutely_price_data_non_intelligent_tariff(self, price_data: list[Price]) -> list[Price]:
-        """
-        Will convert the three prices into 15 min intervals only containing min and max times and what's inbetween.
-        """
-        # prices arrive latest first
-
-        if len(price_data) != 3:
-            raise SystemExit(f"Go (Regular) Tariff has returned {len(price_data)} prices not 3, this is unexpected, please report this to https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues with logs")
-
-        date_now = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-
-        new_price_data = []
-
-        # will only be one low price in data returned
-        lowest_price = min(price_data, key=lambda p: p.value)
-
-        # will be two high prices...
-        yesterday_high_price = price_data[-1]
-        today_high_price = price_data[0]
-
-        ## 00:00 - 00:30 (high price) - 0.5 hours
-        for i in range(2 + 1):
-            new_price_data.append(
-                Price(
-                    value=yesterday_high_price.value,
-                    datetime_from=date_now.replace(hour=0, minute=i*15),
-                    datetime_to=date_now.replace(hour=0, minute=(i+1)*15)
-                )
-            )
-
-        ## 00:30 - 05:30 (low price) - 5 hours
-        for i in range(20 + 1):
-            new_price_data.append(
-                Price(
-                    value=lowest_price.value,
-                    datetime_from=date_now.replace(hour=0, minute=15) + timedelta(minutes=i*15),
-                    datetime_to=date_now.replace(hour=0, minute=30) + timedelta(minutes=(i+1)*15)
-                )
-            )
-        
-        ## 05:30 - 23:45 (high price) - 18:15 hours
-        for i in range(73 + 1):
-            new_price_data.append(
-                Price(
-                    value=today_high_price.value,
-                    datetime_from=date_now.replace(hour=5, minute=30) + timedelta(minutes=i*15),
-                    datetime_to=date_now.replace(hour=5, minute=45) + timedelta(minutes=(i+1)*15)
-                )
-            )
-     
-        return sorted(new_price_data, key=lambda obj: obj.datetime_from)
-
     def run(self):
         today_date = datetime.now(timezone.utc)
 
@@ -195,25 +108,33 @@ class OctopusGoScheduleProvider(ScheduleProvider):
             product_prefix=product_prefix, date_from=date_from, date_to=date_to
         )
 
-
-        todays_interpolated_prices = (
-            self._interpolate_15_minutely_price_data_intelligent_tariff(todays_prices)
-            if self.config.is_intelligent == True
-            else self._interpolate_15_minutely_price_data_non_intelligent_tariff(todays_prices)
-        )
-
-        logging.info(f"Generating schedule for {len(todays_interpolated_prices)} prices")
+        logging.info(f"Generating schedule for {len(todays_prices)} prices")
 
         pricing_strategy_class = self.config._pricing_strategy or DefaultPricingStrategy
 
-        for price in todays_interpolated_prices:
-            pricing_strategy_class(self.tracked_schedule_config.get_config()).handle_price(price, prices=todays_interpolated_prices)
+        for price in todays_prices:
+            pricing_strategy_class(self.tracked_schedule_config.get_config()).handle_price(price, prices=todays_prices)
 
             def job(price: Price):
                 def run_price_task():
-                    pricing_strategy_class(self.config).handle_price(price, prices=todays_interpolated_prices)
+                    pricing_strategy_class(self.config).handle_price(price, prices=todays_prices)
                     
                 return run_price_task
+
+            active_job_run_dates = [job.next_run_time for job in self.scheduler.get_jobs()]
+
+            logging.debug(active_job_run_dates)
+            if price.datetime_from in active_job_run_dates:
+                """
+                This covers when you run it first time, it makes 3 jobs:
+                - yesterdays hangover price (cheap if intel, expensive if go)
+                - todays cheapest period (for go)
+                - todays expensive period (for go and intel)
+                - today and tomorrows expensive period (for go)
+                Doing this we don't try recreating a job that goes into tomorrow.
+                """
+                logging.info(f"not adding job {price.datetime_from} as it already exists")
+                continue
 
             logging.debug(f"Added new job for {price.datetime_from}")
 

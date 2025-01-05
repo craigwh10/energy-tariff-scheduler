@@ -10,9 +10,9 @@ Full documentation: [https://craigwh10.github.io/energy-tariff-scheduler/](https
 
 ## Supported tariff's (so far)
 
-- [Octopus Agile](https://octopus.energy/smart/agile/)
-- [Octopus Go](https://octopus.energy/smart/go/)
-- [Intelligent Octopus Go](https://octopus.energy/smart/intelligent-octopus-go/)
+- [Octopus Agile](https://octopus.energy/smart/agile/) (import only)
+- [Octopus Go](https://octopus.energy/smart/go/) (import only)
+- [Intelligent Octopus Go](https://octopus.energy/smart/intelligent-octopus-go/) (import only)
 
 ## FAQ
 
