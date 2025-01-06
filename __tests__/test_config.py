@@ -11,7 +11,7 @@ print(sys.path)
 import pytest
 import time_machine
 
-from energy_tariff_scheduler.config import ScheduleConfig
+from energy_tariff_scheduler.config import CompleteConfig, PricingStrategyConfig
 from energy_tariff_scheduler.prices import Price
 from energy_tariff_scheduler.schedules import PricingStrategy
 
@@ -29,16 +29,9 @@ class TestScheduleConfig:
             Price(value=3.0, datetime_from=datetime(2024, 3, 24, 2, 30, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 3, 0, tzinfo=timezone.utc))
         ]
 
-        def mock_spec(price):
-            return ''
-
-        action_when_cheap = mocker.create_autospec(mock_spec)
-        action_when_cheap.__name__ = "action_when_cheap"
-        action_when_expensive = mocker.create_autospec(mock_spec)
-        action_when_expensive.__name__ = "action_when_cheap"
 
         class InvalidCustomPricingStrategy:
-            def __init__(self, config: ScheduleConfig):
+            def __init__(self, config: CompleteConfig):
                 self.config = config
             def handle_price(self, price: Price, position: int, prices: list[Price]):
                 if price.value < 5.0:
@@ -49,10 +42,7 @@ class TestScheduleConfig:
         with pytest.raises(
                 SystemExit,
             ):
-            ScheduleConfig(
-                prices_to_include=2,
-                action_when_cheap=action_when_cheap,
-                action_when_expensive=action_when_expensive,
+            PricingStrategyConfig(
             ).add_custom_pricing_strategy(InvalidCustomPricingStrategy)
 
     @time_machine.travel(datetime(2024, 3, 24, 0, 30, tzinfo=timezone.utc))
@@ -66,16 +56,8 @@ class TestScheduleConfig:
             Price(value=3.0, datetime_from=datetime(2024, 3, 24, 2, 30, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 3, 0, tzinfo=timezone.utc))
         ]
 
-        def mock_spec(price):
-            return ''
-
-        action_when_cheap = mocker.create_autospec(mock_spec)
-        action_when_cheap.__name__ = "action_when_cheap"
-        action_when_expensive = mocker.create_autospec(mock_spec)
-        action_when_expensive.__name__ = "action_when_cheap"
-
         class InvalidCustomPricingStrategy(PricingStrategy):
-            def __init__(self, config: ScheduleConfig):
+            def __init__(self, config: CompleteConfig):
                 self.config = config
             def handle_priceINVALID(self, price: Price, prices: list[Price]):
                 if price.value < 5.0:
@@ -86,10 +68,7 @@ class TestScheduleConfig:
         with pytest.raises(
                 SystemExit,
             ):
-            ScheduleConfig(
-                prices_to_include=2,
-                action_when_cheap=action_when_cheap,
-                action_when_expensive=action_when_expensive,
+            PricingStrategyConfig(
             ).add_custom_pricing_strategy(InvalidCustomPricingStrategy)
 
     @time_machine.travel(datetime(2024, 3, 24, 0, 30, tzinfo=timezone.utc))
@@ -102,14 +81,6 @@ class TestScheduleConfig:
             Price(value=5.0, datetime_from=datetime(2024, 3, 24, 2, 0, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 2, 30, tzinfo=timezone.utc)),
             Price(value=3.0, datetime_from=datetime(2024, 3, 24, 2, 30, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 3, 0, tzinfo=timezone.utc))
         ]
-
-        def mock_spec(price):
-            return ''
-
-        action_when_cheap = mocker.create_autospec(mock_spec)
-        action_when_cheap.__name__ = "action_when_cheap"
-        action_when_expensive = mocker.create_autospec(mock_spec)
-        action_when_expensive.__name__ = "action_when_cheap"
 
         class InvalidCustomPricingStrategy(PricingStrategy):
             def __init__(self):
@@ -124,10 +95,7 @@ class TestScheduleConfig:
         with pytest.raises(
                 SystemExit,
             ):
-            ScheduleConfig(
-                prices_to_include=2,
-                action_when_cheap=action_when_cheap,
-                action_when_expensive=action_when_expensive,
+            PricingStrategyConfig(
             ).add_custom_pricing_strategy(InvalidCustomPricingStrategy)
 
     @time_machine.travel(datetime(2024, 3, 24, 0, 30, tzinfo=timezone.utc))
@@ -141,16 +109,8 @@ class TestScheduleConfig:
             Price(value=3.0, datetime_from=datetime(2024, 3, 24, 2, 30, tzinfo=timezone.utc),datetime_to=datetime(2024, 3, 24, 3, 0, tzinfo=timezone.utc))
         ]
 
-        def mock_spec(price):
-            return ''
-
-        action_when_cheap = mocker.create_autospec(mock_spec)
-        action_when_cheap.__name__ = "action_when_cheap"
-        action_when_expensive = mocker.create_autospec(mock_spec)
-        action_when_expensive.__name__ = "action_when_cheap"
-
         class InvalidCustomPricingStrategy(PricingStrategy):
-            def __init__(self, config: ScheduleConfig):
+            def __init__(self, config: CompleteConfig):
                 self.config = config
             def handle_price(self):
                 pass
@@ -158,8 +118,5 @@ class TestScheduleConfig:
         with pytest.raises(
                 SystemExit,
             ):
-            ScheduleConfig(
-                prices_to_include=2,
-                action_when_cheap=action_when_cheap,
-                action_when_expensive=action_when_expensive,
+            PricingStrategyConfig(
             ).add_custom_pricing_strategy(InvalidCustomPricingStrategy)

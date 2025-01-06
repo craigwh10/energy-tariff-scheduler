@@ -16,6 +16,8 @@ Here's an example of the Octopus Agile tariff for 11 days and the schedules gene
 
 ## Current supported supplier tariffs
 
+Currently each of these tariffs only support import pricings.
+
 - Octopus Agile Tariff
 - Octopus Go (EV Tariff)
 - Intelligent Octopus Go (EV Tariff)
@@ -26,6 +28,8 @@ This will ultimately be determined by interest.
 
 - Octopus Tracker
 - E.ON Next Flex
+- EDF GoElectric Overnight
+- EDF "Beat the Peak"
 
 ## Example usage
 

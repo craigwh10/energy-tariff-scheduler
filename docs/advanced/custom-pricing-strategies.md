@@ -6,7 +6,7 @@ By default the scheduler will simply just rank the prices and assign them to the
 
 Custom pricing strategies are python classes that you define and pass into the method for the appropriate tariff, in these you can write your own functionality that acts on the prices, this is using a [Strategy pattern](https://refactoring.guru/design-patterns/strategy) which injects in the config in runtime so that you can use the values you addtionally passed in.
 
-## Example: creating a custom pricing strategy
+## Example: creating a custom pricing strategy for Octopus Agile
 
 Here I'm going to set up a custom pricing strategy which makes sure:
 
