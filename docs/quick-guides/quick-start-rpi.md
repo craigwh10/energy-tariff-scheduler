@@ -1,4 +1,4 @@
-# Quick guide: Raspberry Pi smart plug control using Library
+# Raspberry Pi - Smart plug control
 
 This guide should get you started with the library allowing you to see some actions happening in relation to price.
 
@@ -121,7 +121,3 @@ runner.run_octopus_agile_tariff_schedule(
     account_number=OCTO_ACC_NO,
 )
 ```
-
-<div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
-    <a href="../getting-started/custom-prices-to-include" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">Next &rarr;</a>
-</div>
