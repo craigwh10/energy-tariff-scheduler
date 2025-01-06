@@ -1,8 +1,6 @@
-# Using custom price_to_include functions
+# Custom price_to_include functions
 
-As touched on in [running first schedule page](./running-first-schedule.md#running-your-first-schedule), this introduces the `number_to_include` configuration parameter, mentioning that it can either be a positive integer value or a custom function, this is going to show you how to use this method to select prices programmatically.
-
-The function must always return an integer otherwise it will fail, this integer is the number of prices the pricing strategy will act on.
+A custom `price_to_include` function must always return an integer otherwise it will fail, this integer is the number of prices the pricing strategy will act on.
 
 ## Example
 
@@ -42,8 +40,3 @@ runner.run_octopus_agile_tariff_schedule(
 ```
 
 In this setup I've created a theoretical scenario where I only want to spend take advantage of 15p/kWh total of prices, and work out from the available prices how many prices that is, which the strategy will then use.
-
-<div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
-    <a href="../running-first-schedule" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">&larr; Previous</a>
-    <a href="../custom-pricing-strategies" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">Next &rarr;</a>
-</div>

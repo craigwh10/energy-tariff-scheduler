@@ -1,12 +1,10 @@
-# Using custom pricing strategies
+# Custom pricing strategies
 
 By default the scheduler will simply just rank the prices and assign them to the appropriate actions, but you might hit a case where you need something more complex than that, such as if you have a system where constraints are important or if you wanted to introduce another parameter to the scheduling, such as carbon intensity.
 
 ## What are these?
 
 Custom pricing strategies are python classes that you define and pass into the method for the appropriate tariff, in these you can write your own functionality that acts on the prices, this is using a [Strategy pattern](https://refactoring.guru/design-patterns/strategy) which injects in the config in runtime so that you can use the values you addtionally passed in.
-
-For a description of the configuration you can pass in see [configuration](./running-first-schedule.md#configuration).
 
 ## Example: creating a custom pricing strategy
 
@@ -59,7 +57,3 @@ runner.run_octopus_agile_tariff_schedule(
     account_number="YOUR-ACCOUNT-NUMBER"
 )
 ```
-
-<div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
-    <a href="../custom-prices-to-include" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">&larr; Previous</a>
-</div>

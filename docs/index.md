@@ -1,18 +1,14 @@
 # Welcome to Energy Tariff Scheduler
 
-This is designed to help users easily leverage pricing data provided by Energy Suppliers. It enables scheduled smart actions on connected devices when prices are particularly low or high, simplifying the process of optimizing energy usage in your home.
+This is designed to help people easily leverage pricing data provided by Energy Suppliers for use cases such as home automation & internet of things.
 
-The library will work for people who just want to plug and play and kick off with the preconfigured price strategies, or if you want, you can provide your own strategy.
-
-## What are tariffs
-
-Tariffs are what Energy Suppliers use to offer pricing options for your electricity usage, these vary between suppliers are specialised to what type of customer you are, such as the Octopus Agile Tariff is set up in a way for people who are concious of the changes in prices throughout the day, allowing them to plan around these.
+Setting this up yourself can be quite a burden, especially if you need the same functionality across applications, this should allow you to simply install, add actions and start automating!
 
 ## Do prices even change that much?
 
-Yes they do, the prices are driven by supply and demand throughout the day, such as when people are awake or asleep, or fluctuations in generation such as it being windy during the day leading to cheaper electricity from renewable sources.
+Yes they do, the energy prices are driven by supply and demand throughout the day, such as when people are awake or asleep, or fluctuations in generation such as it being windy during the day leading to cheaper electricity from renewable sources which are considerably cheaper than fossil fuels.
 
-Here's an example of 11 days and a schedule generated from this library for Octopus Agile tariff, for a battery being charged under constant load:
+Here's an example of the Octopus Agile tariff for 11 days and the schedules generated for a battery being charged when it's cheap under constant load:
 
 <img src="schedule.gif" alt="11 days of battery being charged over constant load" />
 
@@ -21,10 +17,13 @@ Here's an example of 11 days and a schedule generated from this library for Octo
 ## Current supported supplier tariffs
 
 - Octopus Agile Tariff
+- Octopus Go (EV Tariff)
+- Intelligent Octopus Go (EV Tariff)
 
 ## Prospective supplier tariffs
 
-- Octopus Go (EV Tariff)
+This will ultimately be determined by interest.
+
 - Octopus Tracker
 - E.ON Next Flex
 
@@ -37,7 +36,8 @@ If you want to be featured on here make a post on <a href="https://github.com/cr
 ## Related links
 
 - <a href="https://github.com/craigwh10/energy-tariff-scheduler" target="_blank">https://github.com/craigwh10/energy-tariff-scheduler</a>
+- <a href="https://pypi.org/project/energy-tariff-scheduler/" target="_blank">https://pypi.org/project/energy-tariff-scheduler/</a>
 
 <div style="display: flex; width: 100%; background: #ebebeb; padding: 1em; gap: 1em; border-radius: 0.2em; margin-top: 2em;">
-    <a href="./getting-started/installation" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">Next &rarr;</a>
+    <a href="./installation" style="flex: 6; text-align: center; color: white; background: var(--md-typeset-a-color); padding: 0.5em 0em;">Next &rarr;</a>
 </div>

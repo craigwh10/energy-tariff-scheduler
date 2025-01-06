@@ -5,6 +5,17 @@ theme:
 plugins:
     - awesome-pages
     - search
+    - include-markdown:
+        encoding: ascii
+        preserve_includer_indent: false
+        dedent: false
+        trailing_newlines: true
+        comments: true
+        rewrite_relative_urls: true
+        heading_offset: 0
+        start: <!--start-->
+        end: <!--end-->
+        recursive: true
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
