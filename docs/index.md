@@ -16,11 +16,14 @@ Here's an example of the Octopus Agile tariff for 11 days and the schedules gene
 
 ## Current supported supplier tariffs
 
-Currently each of these tariffs only support import pricings.
+Currently each of these tariffs only support import products.
 
-- Octopus Agile Tariff
-- Octopus Go (EV Tariff)
-- Intelligent Octopus Go (EV Tariff)
+<!--start-->
+{%
+    include-markdown "./current-supported.md"
+    heading-offset=1
+%}
+<!--end-->
 
 ## Prospective supplier tariffs
 

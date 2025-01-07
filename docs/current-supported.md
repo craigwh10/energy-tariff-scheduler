@@ -1,0 +1,3 @@
+- Octopus Agile Tariff
+- Octopus Go (EV Tariff)
+- Intelligent Octopus Go (EV Tariff)

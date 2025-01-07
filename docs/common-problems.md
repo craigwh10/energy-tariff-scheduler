@@ -30,6 +30,17 @@ The tariff code you are on isn't supported by this script, please read https://c
 
 For the example referenced, the debug level is set as `DEBUG`.
 
+The current supported tariffs are:
+
+<!--start-->
+{%
+    include-markdown "./current-supported.md"
+    heading-offset=1
+%}
+<!--end-->
+
+To help with development of this library, make a post on <a href="https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues" target="_blank">on the API issues page</a>, describing your tariff/product structure as well as including the logs showing the mismatch and you should get a response as soon as as possible!
+
 ## [Less common] The runner wont start because of the API not returning data
 
 This library is build around third party API's, these can fail due to many reasons which are out of this libraries control.
