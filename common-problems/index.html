@@ -686,6 +686,18 @@
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>The tariff code you are on isn&#39;t supported by this script, please read https://craigwh10.github.io/energy-tariff-scheduler/common-problems/#possibly-common-octopus-the-runner-isnt-finding-my-tariff-or-product
 </span></code></pre></div></td></tr></table></div>
 <p>For the example referenced, the debug level is set as <code>DEBUG</code>.</p>
+<p>The current supported tariffs are:</p>
+<!--start-->
+<!-- BEGIN INCLUDE ./current-supported.md '&lt;!--start--&gt;' '&lt;!--end--&gt;' -->
+<ul>
+<li>Octopus Agile Tariff</li>
+<li>Octopus Go (EV Tariff)</li>
+<li>Intelligent Octopus Go (EV Tariff)</li>
+</ul>
+<!-- END INCLUDE -->
+<!--end-->
+
+<p>To help with development of this library, make a post on <a href="https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues" target="_blank">on the API issues page</a>, describing your tariff/product structure as well as including the logs showing the mismatch and you should get a response as soon as as possible!</p>
 <h2 id="less-common-the-runner-wont-start-because-of-the-api-not-returning-data">[Less common] The runner wont start because of the API not returning data<a class="headerlink" href="#less-common-the-runner-wont-start-because-of-the-api-not-returning-data" title="Permanent link"></a></h2>
 <p>This library is build around third party API's, these can fail due to many reasons which are out of this libraries control.</p>
 <p>I wouldn't reccomend spam retrying the script as this could lead to your IP being blacklisted, the script automatically tries to retry the failed call 3 times (with a 10s delay), it could take upwards of a few days for things to get rectified (as it's people on the other end who need to fix it), so just be patient with it and try every hour or so.</p>
