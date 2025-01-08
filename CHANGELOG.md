@@ -1,8 +1,8 @@
-# Changelog
+# Introduction
 
 All notable changes to this project will be documented in this file.
 
-Format: [https://gist.github.com/juampynr/4c18214a8eb554084e21d6e288a18a2c](https://gist.github.com/juampynr/4c18214a8eb554084e21d6e288a18a2c)
+If a version moves in major versions for example from `0.0.0` to `1.0.0` please be sure to read the change log to understand what has changed with a remedy to fix it, a major version bump means that the things you interact with are no longer backwards compatible between versions.
 
 ## [0.0.5] - 2025-01-02
 
@@ -49,3 +49,7 @@ Format: [https://gist.github.com/juampynr/4c18214a8eb554084e21d6e288a18a2c](http
 ### Fixed
 
 - Product tariff matching is now using the convention rather than fuzzy matching, as to support products endpoint not returning products with `valid_to` in the future.
+
+# Reference
+
+This changelog is following the format shown in <a href="https://gist.github.com/juampynr/4c18214a8eb554084e21d6e288a18a2c" target="_blank">https://gist.github.com/juampynr/4c18214a8eb554084e21d6e288a18a2c</a>
