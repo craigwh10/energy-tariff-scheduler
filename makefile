@@ -7,13 +7,13 @@ build:
 .PHONY: test-go
 test-go:
 	pip uninstall energy_tariff_scheduler
-	pip install dist/energy_tariff_scheduler-0.0.7-py3-none-any.whl
+	pip install dist/energy_tariff_scheduler-0.0.8-py3-none-any.whl
 	python ./_test_go_script.py
 
 .PHONY: test-agile
 test-agile:
 	pip uninstall energy_tariff_scheduler
-	pip install dist/energy_tariff_scheduler-0.0.7-py3-none-any.whl
+	pip install dist/energy_tariff_scheduler-0.0.8-py3-none-any.whl
 	python ./_test_agile_script.py
 
 .PHONY: deploy
