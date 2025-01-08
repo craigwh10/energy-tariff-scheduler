@@ -14,9 +14,9 @@ logging.getLogger("energy_tariff_scheduler").setLevel(logging.INFO)
 
 ## [Possibly common] Octopus: The runner is using the incorrect product and prices
 
-Currently the logic for finding your tariff is it fetches your account details from your provided account number, finds your most recent tariff, gets the tariff code for it and then tries its best to match the closest product code from the current active products provided by Octopus (where they are non-business type and within Octopus brand), here it's assumed that the product code contains as many characters as possible in the tariff code, such as if your tariff code is `E-1R-AGILE-FLEX-22-11-25-C` if a product doesn't exist for this it may match `AGILE-24-10-01`.
+Currently the logic for finding your tariff and product is it fetches your account details from your provided account number, finds your most recent tariff, gets the tariff code for it and then tries removes the prefix `E-1R` and the suffix `-{R}` (region code).
 
-Obviously this isn't foolproof and a big assumption has been made here so expect it to fail, and if it does please raise it <a href="https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues" target="_blank">on the API issues page</a> and provide relevant logs provided under the `DEBUG` level, an effort has been made to not log out any sensitive data but please be vigilant not to post any in the case of seeing any.
+Obviously this isn't foolproof and a big assumption from the data has been made here so it may fail, and if it does please raise it <a href="https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues" target="_blank">on the API issues page</a> and provide relevant logs provided under the `DEBUG` level, an effort has been made to not log out any sensitive data but please be vigilant not to post any in the case of seeing any.
 
 ### My tariff isn't supported
 
