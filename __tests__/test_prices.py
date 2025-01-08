@@ -130,7 +130,7 @@ class TestOctopusPricesClient:
         assert len(prices) == 46
 
 class TestOctopusCurrentTariffAndProductClient:
-   def test_get_current_tariff_and_product(self, mocker: MockerFixture, monkeypatch):
+   def test_get_current_tariff_and_product_single_mpan(self, mocker: MockerFixture, monkeypatch):
         mock_account_response = Mock()
         mock_account_response.status_code = 200
 
@@ -159,4 +159,35 @@ class TestOctopusCurrentTariffAndProductClient:
         tariff, product = client.get_accounts_tariff_and_matched_product_code("AGILE")
 
         assert tariff == "E-1R-AGILE-FLEX-22-11-25-C"
-        assert product == "AGILE-24-10-01" # this shows the fuzzy matching is working
+        assert product == "AGILE-FLEX-22-11-25" # this shows the fuzzy matching is working
+
+   def test_get_current_tariff_and_product_multi_mpan(self, mocker: MockerFixture, monkeypatch):
+        mock_account_response = Mock()
+        mock_account_response.status_code = 200
+
+        mock_products_response = Mock()
+        mock_products_response.status_code = 200
+
+        with open("./__tests__/mock_account_response_octopus_multimpan.json") as f:
+            mock_account = json.load(f)
+            mock_account_response.json.return_value = mock_account
+
+        with open("./__tests__/mock_products_response_octopus.json") as f:
+            mock_products = json.load(f)
+            mock_products_response.json.return_value = mock_products
+
+        mock_get = mocker.patch('requests.get')
+
+        mock_get.side_effect = [mock_account_response, mock_products_response]
+
+        client = OctopusCurrentTariffAndProductClient(
+            auth_config=OctopusAPIAuthConfig(
+                api_key="mock_api_key",
+                account_number="mock_account_number"
+            )
+        )
+
+        tariff, product = client.get_accounts_tariff_and_matched_product_code("AGILE")
+
+        assert tariff == "E-1R-AGILE-24-04-03-B"
+        assert product == "AGILE-24-04-03" # this shows the fuzzy matching is working

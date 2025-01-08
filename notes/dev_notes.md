@@ -102,3 +102,33 @@ monkeypatch.setattr(
     client.get_accounts_tariff_and_matched_product_code.retry, "stop", stop_after_attempt(1)
 )
 ```
+
+## Product code and tariff relation
+
+Originally I worked out the tariff-product match like below:
+
+```
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(10))
+    def get_products(self) -> list[dict]:
+        url = f"https://api.octopus.energy/v1/products/?brand=OCTOPUS_ENERGY&is_business=False"
+        response = requests.get(url)
+        response.raise_for_status()
+
+        products = response.json()
+
+        logging.debug(f"Full Octopus Agile products: {products}")
+
+        # add pydantic validation here - improving return type
+
+        return products.get("results")
+...
+        products = self.get_products()
+
+        logging.debug(f"Full Octopus Agile products: {products}")
+
+        agile_products = [product for product in products if product["code"].startswith(product_code_prefix)]
+
+        matched_product = max(agile_products, key=lambda product: SequenceMatcher(None, product["code"], latest_tariff_code).ratio())
+```
+
+However this is troublesome because sometimes products end in the future rather than have `None` as their end time, so I'm going to rely on the pattern that the tariff is of the format `{code}-{product}-{region}`, I'm simply going to remove the prefix and suffix.

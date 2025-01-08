@@ -39,3 +39,13 @@ Format: [https://gist.github.com/juampynr/4c18214a8eb554084e21d6e288a18a2c](http
 - Removed interpolations, jobs for Go and Intelligent Go now only trigger during price boundaries
 
 ### Fixed
+
+## [0.0.8] - 2025-01-08
+
+### Added
+
+### Changed
+
+### Fixed
+
+- Product tariff matching is now using the convention rather than fuzzy matching, as to support products endpoint not returning products with `valid_to` in the future.

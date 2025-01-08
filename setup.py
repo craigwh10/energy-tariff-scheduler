@@ -9,7 +9,7 @@ with open(readme_path, 'r') as f:
 
 setup(
     name='energy_tariff_scheduler',
-    version='0.0.7', # TODO: link this to a file which is shared and bumped on twine run
+    version='0.0.8', # TODO: link this to a file which is shared and bumped on twine run
     author='Craig White',
     author_email='dev.craigw@gmail.com',
     description='Schedule actions based on energy tariffs',

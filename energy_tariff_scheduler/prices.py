@@ -46,20 +46,6 @@ class OctopusCurrentTariffAndProductClient:
         # add pydantic validation here
 
         return account_details
-
-    @retry(stop=stop_after_attempt(3), wait=wait_fixed(10))
-    def get_products(self) -> list[dict]:
-        url = f"https://api.octopus.energy/v1/products/?brand=OCTOPUS_ENERGY&is_business=False"
-        response = requests.get(url)
-        response.raise_for_status()
-
-        products = response.json()
-
-        logging.debug(f"Full Octopus Agile products: {products}")
-
-        # add pydantic validation here - improving return type
-
-        return products.get("results")
     
     def get_accounts_tariff_and_matched_product_code(self, product_code_prefix: str) -> tuple[str, str]:
         """
@@ -73,31 +59,57 @@ class OctopusCurrentTariffAndProductClient:
         property = properties[0]
 
         meter_points = property.get("electricity_meter_points")
-        meter_point = meter_points[0]
 
-        agreements = meter_point.get("agreements")
+        tariffs_active: list[str] = []
+        for idx, meter_point in enumerate(meter_points):
+            agreements = meter_point.get("agreements")
+            
+            logging.debug(f"Agreement [{idx}]: {agreements}")  
 
-        logging.debug(f"Agreements: {agreements}")
+            datetime_now = datetime.now(timezone.utc)
+            current_agreement_by_none = [agreement for agreement in agreements if agreement.get("valid_to") == None]
+            current_agreement_by_future = [
+                agreement for agreement in agreements
+                if (
+                    datetime.fromisoformat(agreement.get("valid_to")) > datetime_now 
+                    if agreement.get("valid_to") is not None 
+                    else None
+                )
+            ]
 
-        agreement = [agreement for agreement in agreements if agreement.get("valid_to") == None]
+            if len(current_agreement_by_none) == 0 and len(current_agreement_by_future) == 0:
+                raise SystemExit(
+                    f"Unable to find an active agreement for your account, check that you have a tariff active with Octopus"
+                )
+            
+            if len(current_agreement_by_none) >= 1 and len(current_agreement_by_future) >= 1:
+                raise SystemExit(
+                    f"Found multiple active agreements for a meter, this is unexpected, please raise this on https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues to help us understand how this has happened"
+                )
+            
+            current_active_agreement = next(checked_agreement for checked_agreement in [
+                current_agreement_by_none,
+                current_agreement_by_future
+            ] if len(checked_agreement) == 1)[0]
+            
+            latest_tariff_code = current_active_agreement.get("tariff_code")
 
-        latest_agreement = agreement[0]
-        latest_tariff_code = latest_agreement.get("tariff_code")
+            tariffs_active.append(latest_tariff_code)
+
+        matched_tariff = next((tariff for tariff in tariffs_active if tariff.find(product_code_prefix)), None)
+
+        if matched_tariff == None:
+            raise SystemExit(
+                f"The tariff code you are on isn't supported by this script, please read https://craigwh10.github.io/energy-tariff-scheduler/common-problems/#possibly-common-octopus-the-runner-isnt-finding-my-tariff-or-product"    
+            )
 
         logging.info(f"Latest tariff code: {latest_tariff_code}")
 
-        products = self.get_products()
+        product_code_for_tariff = f"{latest_tariff_code[5:-2]}"
 
-        logging.debug(f"Full Octopus Agile products: {products}")
+        logging.info(f"Using product: {product_code_for_tariff} for active tariff code {latest_tariff_code}")
 
-        agile_products = [product for product in products if product["code"].startswith(product_code_prefix)]
-
-        # FIXME: possibly a more suitable solution for this would be having a dictionary of product codes and their tariffs
-        matched_product = max(agile_products, key=lambda product: SequenceMatcher(None, product["code"], latest_tariff_code).ratio())
-
-        logging.info(f"Matched product: {matched_product} for active tariff code {latest_tariff_code}")
-
-        return latest_tariff_code, matched_product["code"]
+        return latest_tariff_code, product_code_for_tariff
 
 class OctopusPricesClient:
     def __init__(self, auth_config: "OctopusAPIAuthConfig", tariff_and_product_client: "OctopusCurrentTariffAndProductClient"):
