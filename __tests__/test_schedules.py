@@ -16,9 +16,9 @@ from energy_tariff_scheduler.config import CompleteConfig
 from energy_tariff_scheduler.prices import Price
 
 class TestDefaultPricingStrategy:
-    def test_happy_path_with_int_cheapest_prices_to_include(self):
+    def test_happy_path_with_int_cheapest_considered_price_count(self):
         class MockConfig:
-            prices_to_include = 2
+            considered_price_count = 2
             action_when_cheap = Mock()
             action_when_expensive = Mock()
 
@@ -38,8 +38,8 @@ class TestDefaultPricingStrategy:
         mock_config.action_when_cheap.assert_not_called()
         mock_config.action_when_expensive.assert_called_once()
     
-    def test_happy_path_with_callable_cheapest_prices_to_include(self):
-        def _prices_to_include(prices):
+    def test_happy_path_with_callable_cheapest_considered_price_count(self):
+        def _considered_price_count(prices):
             # only get the count where sum cost is no greater than 15p/kWh
             # e.g 3.0 + 5.0 + 3.0 + 4.0 = 15 (wont include 8.0)
 
@@ -56,7 +56,7 @@ class TestDefaultPricingStrategy:
 
         class MockConfig:
             # workaround: https://stackoverflow.com/a/35322635
-            prices_to_include = staticmethod(_prices_to_include)
+            considered_price_count = staticmethod(_considered_price_count)
             action_when_cheap = Mock()
             action_when_expensive = Mock()
 
@@ -78,7 +78,7 @@ class TestDefaultPricingStrategy:
 
     def test_handles_price_include_length_greater_than_prices(self):
         class MockConfig:
-            prices_to_include = 6
+            considered_price_count = 6
             action_when_cheap = Mock()
             action_when_expensive = Mock()
             _pricing_strategy = None
@@ -112,7 +112,7 @@ class TestOctopusAgileScheduleProvider:
         ]
 
         class MockConfig:
-            prices_to_include = 2
+            considered_price_count = 2
             action_when_cheap = Mock()
             action_when_expensive = Mock()
             _pricing_strategy = None
@@ -156,7 +156,7 @@ class TestOctopusAgileScheduleProvider:
                     self.config.action_when_expensive(price)
 
         class MockConfig:
-            prices_to_include = 2
+            considered_price_count = 2
             action_when_cheap = Mock()
             action_when_expensive = Mock()
             pricing_strategy = CustomPricingStrategy
@@ -202,7 +202,7 @@ class TestOctopusGoScheduleProvider:
 
         class MockConfig:
             is_intelligent = False
-            prices_to_include = 2
+            considered_price_count = 2
             action_when_cheap = Mock()
             action_when_expensive = Mock()
             _pricing_strategy = None
@@ -293,7 +293,7 @@ class TestOctopusGoScheduleProvider:
 
         class MockConfig:
             is_intelligent = True
-            prices_to_include = 2
+            considered_price_count = 2
             action_when_cheap = Mock()
             action_when_expensive = Mock()
             _pricing_strategy = None

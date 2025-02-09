@@ -51,11 +51,11 @@ class DefaultPricingStrategy(PricingStrategy):
         self.config = config
 
     def _determine_cheapest_to_include(self, prices):
-        if isinstance(self.config.prices_to_include, Callable):
-            number_of_cheapest_to_include = self.config.prices_to_include(prices)
+        if isinstance(self.config.considered_price_count, Callable):
+            number_of_cheapest_to_include = self.config.considered_price_count(prices)
 
-        if isinstance(self.config.prices_to_include, int):
-            number_of_cheapest_to_include = self.config.prices_to_include
+        if isinstance(self.config.considered_price_count, int):
+            number_of_cheapest_to_include = self.config.considered_price_count
         
         return number_of_cheapest_to_include
 
@@ -105,7 +105,9 @@ class OctopusGoScheduleProvider(ScheduleProvider):
         product_prefix = "INTELLI" if self.config.is_intelligent == True else "GO"
 
         todays_prices = self.prices_client.get_prices_for_users_tariff_and_product(
-            product_prefix=product_prefix, date_from=date_from, date_to=date_to
+            product_prefix=product_prefix,
+            date_from=date_from, date_to=date_to,
+            is_export=self.config.is_export
         )
 
         logging.info(f"Generating schedule for {len(todays_prices)} prices")
@@ -144,6 +146,7 @@ class OctopusGoScheduleProvider(ScheduleProvider):
                 run_date=price.datetime_from.replace(tzinfo=ZoneInfo("GMT")),
                 misfire_grace_time=60*10,
                 next_run_time=price.datetime_from.replace(tzinfo=ZoneInfo("GMT")),
+                jobstore="daily-actions-go"
             )
 
         logging.info("Schedule generated")
@@ -179,7 +182,12 @@ class OctopusAgileScheduleProvider(ScheduleProvider):
             day=today_date.day      
         ).isoformat("T")
 
-        todays_prices = self.prices_client.get_prices_for_users_tariff_and_product("AGILE", date_from, date_to)
+        todays_prices = self.prices_client.get_prices_for_users_tariff_and_product(
+            product_prefix="AGILE",
+            date_from=date_from,
+            date_to=date_to,
+            is_export=self.config.is_export
+        )
 
         logging.info(f"Generating schedule for {len(todays_prices)} prices")
 
@@ -203,7 +211,8 @@ class OctopusAgileScheduleProvider(ScheduleProvider):
                 trigger='date',
                 run_date=price.datetime_from.replace(tzinfo=ZoneInfo("GMT")),
                 misfire_grace_time=60*15,
-                next_run_time=price.datetime_from.replace(tzinfo=ZoneInfo("GMT"))
+                next_run_time=price.datetime_from.replace(tzinfo=ZoneInfo("GMT")),
+                jobstore="continuous-agile"
             )
     
         logging.info("Schedule generated")

@@ -50,6 +50,22 @@ If a version moves in major versions for example from `0.0.0` to `1.0.0` please 
 
 - Product tariff matching is now using the convention rather than fuzzy matching, as to support products endpoint not returning products with `valid_to` in the future.
 
+## [1.0.0] - 2025-01-11
+
+### Added
+
+- Support for export tariffs, simply add the parameter `is_export=True` if your tariff is an exporting one or `is_export=False` if not
+
+### Changed
+
+- Changed `prices_to_include` to `considered_price_count` for clarity on the purpose of the parameter.
+  - FIX: Simply change the parameter name on the runner method for the tariff you're using
+
+### Fixed
+
+- Tariff-product matching no longer returns first meter with an active product
+- Stability of renewing schedule
+
 # Reference
 
 This changelog is following the format shown in <a href="https://gist.github.com/juampynr/4c18214a8eb554084e21d6e288a18a2c" target="_blank">https://gist.github.com/juampynr/4c18214a8eb554084e21d6e288a18a2c</a>

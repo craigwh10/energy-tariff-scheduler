@@ -38,10 +38,10 @@ class SimpleActionsConfig(BaseConfig):
     )
 
 class PricesToIncludeConfig(BaseConfig):
-    prices_to_include: PositiveInt | Callable[[list[Price]], int]
+    considered_price_count: PositiveInt | Callable[[list[Price]], int]
 
-    @field_validator("prices_to_include", mode="before")
-    def validation_prices_to_include_custom_method(cls, value, info):
+    @field_validator("considered_price_count", mode="before")
+    def validation_considered_price_count_custom_method(cls, value, info):
         if isinstance(value, float):
             raise SystemExit(
                 f"Runner usage error:\n\n"+\
@@ -125,10 +125,11 @@ class CompleteConfig(SimpleActionsConfig, PricesToIncludeConfig, PricingStrategy
 class OctopusGoScheduleConfig(CompleteConfig):
     #  Go is 10 prices, Intelligent is 12 prices
     is_intelligent: bool = False
+    is_export: bool = False
 
 class OctopusAgileScheduleConfig(CompleteConfig):
     # Agile is 46 prices
-    pass
+    is_export: bool = False
 
 class TrackedSchedule:
     price: Price
