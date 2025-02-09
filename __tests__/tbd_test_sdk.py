@@ -33,7 +33,7 @@
 #             def run_schedule():
 #                 with pytest.raises(SystemExit) as excinfo:
 #                     run_octopus_agile_tariff_schedule(
-#                         prices_to_include=5,
+#                         considered_price_count=5,
 #                         action_when_cheap=action_when_cheap,
 #                         action_when_expensive=action_when_expensive,
 #                         run_continously=False  # Enable continuous running for the loop
@@ -75,7 +75,7 @@
 
 #             def run_schedule():
 #                 run_octopus_agile_tariff_schedule(
-#                     prices_to_include=5,
+#                     considered_price_count=5,
 #                     action_when_cheap=action_when_cheap,
 #                     action_when_expensive=action_when_expensive,
 #                     run_continously=True  # Enable continuous running for the loop

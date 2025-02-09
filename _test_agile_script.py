@@ -24,9 +24,10 @@ def switch_shelly_off_and_alert(price: Price):
     requests.get(f"http://{SMART_PLUG_IP}/relay/0?turn=off")
 
 runner.run_octopus_agile_tariff_schedule(
-    prices_to_include=10,
+    considered_price_count=10,
     action_when_cheap=switch_shelly_on_and_alert,
     action_when_expensive=switch_shelly_off_and_alert,
     api_key=OCTO_API_KEY,
-    account_number=OCTO_ACC_NO
+    account_number=OCTO_ACC_NO,
+    is_export=False
 )

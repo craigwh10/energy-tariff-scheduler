@@ -49,7 +49,7 @@ def switch_shelly_off_and_alert(price: Price):
     requests.get("http://<shelly_ip>/relay/0?turn=off")
 
 runner.run_octopus_agile_tariff_schedule(
-    prices_to_include=5, # 5 opportunties to trigger "action_when_cheap"
+    considered_price_count=5, # 5 opportunties to trigger "action_when_cheap"
     action_when_cheap=switch_shelly_on_and_alert,
     action_when_expensive=switch_shelly_off_and_alert,
     pricing_strategy=CustomPricingStrategy,

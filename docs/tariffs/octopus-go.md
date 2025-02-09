@@ -39,7 +39,7 @@ def action_when_expensive(price: Price)
     print("expensive", price.value)
 
 runner.run_octopus_go_tariff_schedule(
-  prices_to_include=12,
+  considered_price_count=12,
   action_when_cheap=action_when_cheap,
   action_when_expensive=action_when_expensive,
   api_key="YOUR-API-KEY",

@@ -125,7 +125,12 @@ class TestOctopusPricesClient:
             tariff_and_product_client=MockOctopusCurrentTariffAndProductClient()
         )
 
-        prices = client.get_prices_for_users_tariff_and_product("AGILE", datetime(2023, 3, 26, 0, 0, tzinfo=london_tz), datetime(2023, 3, 26, 23, 59, 59, tzinfo=london_tz))
+        prices = client.get_prices_for_users_tariff_and_product(
+            "AGILE",
+            datetime(2023, 3, 26, 0, 0, tzinfo=london_tz),
+            datetime(2023, 3, 26, 23, 59, 59, tzinfo=london_tz),
+            is_export=False    
+        )
 
         assert len(prices) == 46
 
@@ -156,9 +161,9 @@ class TestOctopusCurrentTariffAndProductClient:
             )
         )
 
-        tariff, product = client.get_accounts_tariff_and_matched_product_code("AGILE")
+        matched_tariff, product = client.get_accounts_tariff_and_matched_product_code("AGILE")
 
-        assert tariff == "E-1R-AGILE-FLEX-22-11-25-C"
+        assert matched_tariff == "E-1R-AGILE-FLEX-22-11-25-C"
         assert product == "AGILE-FLEX-22-11-25" # this shows the fuzzy matching is working
 
    def test_get_current_tariff_and_product_multi_mpan(self, mocker: MockerFixture, monkeypatch):
@@ -187,7 +192,7 @@ class TestOctopusCurrentTariffAndProductClient:
             )
         )
 
-        tariff, product = client.get_accounts_tariff_and_matched_product_code("AGILE")
+        matched_tariff, product = client.get_accounts_tariff_and_matched_product_code("AGILE")
 
-        assert tariff == "E-1R-AGILE-24-04-03-B"
-        assert product == "AGILE-24-04-03" # this shows the fuzzy matching is working
+        assert matched_tariff == "E-1R-AGILE-FLEX-22-11-25-C"
+        assert product == "AGILE-FLEX-22-11-25" # this shows the fuzzy matching is working

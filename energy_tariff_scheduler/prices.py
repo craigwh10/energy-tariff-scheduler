@@ -1,6 +1,7 @@
 import logging
 import requests
 from requests.auth import HTTPBasicAuth
+from itertools import chain
 
 from datetime import timezone, datetime
 from difflib import SequenceMatcher
@@ -26,13 +27,16 @@ NOTE: Currently my assumption is that this setup should be able to get the price
 NOTE: This is still TBD as I don't fully know the data structures from complex tariffs and setups yet, primarily just homes with smart meters.
 """
 
+URL = f"http://localhost:8080"
+# https://api.octopus.energy
+
 class OctopusCurrentTariffAndProductClient:
     def __init__(self, auth_config: "OctopusAPIAuthConfig"):
         self.auth_config = auth_config
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(10))
     def get_account(self) -> dict:
-        url = f"https://api.octopus.energy/v1/accounts/{self.auth_config.account_number}/"
+        url = f"{URL}/v1/accounts/{self.auth_config.account_number}/"
         
         logging.info(f"Getting account details for your account number")
 
@@ -41,13 +45,15 @@ class OctopusCurrentTariffAndProductClient:
 
         account_details = response.json()
 
+        logging.debug(f"acc: {account_details}")
+
         logging.debug(f"Account details found")
 
         # add pydantic validation here
 
         return account_details
     
-    def get_accounts_tariff_and_matched_product_code(self, product_code_prefix: str) -> tuple[str, str]:
+    def get_accounts_tariff_and_matched_product_code(self, product_code_prefix: str, is_export: bool) -> tuple[str, str]:
         """
         product_code_prefix: "AGILE" or "GO"
         """
@@ -60,10 +66,20 @@ class OctopusCurrentTariffAndProductClient:
 
         meter_points = property.get("electricity_meter_points")
 
-        tariffs_active: list[str] = []
+        tariffs_active_per_mpan: list[list[str]] = []
         for idx, meter_point in enumerate(meter_points):
+            logging.debug(f"Checking mpan[{idx}]")
+
+            mpan_export_status = meter_point.get("is_export")
+            if mpan_export_status != is_export:
+                logging.debug(
+                    f"Skipped mpan[{idx}] as your choice {'EXPORT' if is_export else 'IMPORT'} is not {'EXPORT' if mpan_export_status else 'IMPORT'}"
+                )
+                continue
+            
             agreements = meter_point.get("agreements")
             
+            logging.debug(f"mpan[{idx}] {'is an exporting meter' if is_export else 'is an importing meter'}")
             logging.debug(f"Agreement [{idx}]: {agreements}")  
 
             datetime_now = datetime.now(timezone.utc)
@@ -86,30 +102,34 @@ class OctopusCurrentTariffAndProductClient:
                 raise SystemExit(
                     f"Found multiple active agreements for a meter, this is unexpected, please raise this on https://github.com/craigwh10/energy-tariff-scheduler/discussions/new?category=api-issues to help us understand how this has happened"
                 )
-            
-            current_active_agreement = next(checked_agreement for checked_agreement in [
-                current_agreement_by_none,
-                current_agreement_by_future
-            ] if len(checked_agreement) == 1)[0]
-            
-            latest_tariff_code = current_active_agreement.get("tariff_code")
 
-            tariffs_active.append(latest_tariff_code)
+            all_current_agreements = [
+                *current_agreement_by_future,
+                *current_agreement_by_none
+            ]
+
+            all_current_tariffs: list[str] = [
+                current_agreement.get("tariff_code") for current_agreement in all_current_agreements
+            ]
+            
+            tariffs_active_per_mpan.append(all_current_tariffs)
+
+        tariffs_active = list(chain(*tariffs_active_per_mpan))
+
+        logging.debug(f"tariffs active: {tariffs_active}")
 
         matched_tariff = next((tariff for tariff in tariffs_active if tariff.find(product_code_prefix)), None)
 
         if matched_tariff == None:
             raise SystemExit(
-                f"The tariff code you are on isn't supported by this script, please read https://craigwh10.github.io/energy-tariff-scheduler/common-problems/#possibly-common-octopus-the-runner-isnt-finding-my-tariff-or-product"    
+                f"The tariff code you are on ({matched_tariff}) isn't supported by this script, please read https://craigwh10.github.io/energy-tariff-scheduler/common-problems/#possibly-common-octopus-the-runner-isnt-finding-my-tariff-or-product"    
             )
 
-        logging.info(f"Latest tariff code: {latest_tariff_code}")
+        product_code_for_tariff = f"{matched_tariff[5:-2]}"
 
-        product_code_for_tariff = f"{latest_tariff_code[5:-2]}"
+        logging.info(f"Using product: {product_code_for_tariff} for active tariff code {matched_tariff}")
 
-        logging.info(f"Using product: {product_code_for_tariff} for active tariff code {latest_tariff_code}")
-
-        return latest_tariff_code, product_code_for_tariff
+        return matched_tariff, product_code_for_tariff
 
 class OctopusPricesClient:
     def __init__(self, auth_config: "OctopusAPIAuthConfig", tariff_and_product_client: "OctopusCurrentTariffAndProductClient"):
@@ -117,7 +137,7 @@ class OctopusPricesClient:
         self.tariff_and_product_client = tariff_and_product_client
 
     def get_prices(self, product_code: str, tariff_code: str, period_from: str, period_to: str) -> list[dict]:
-        url = f"https://api.octopus.energy/v1/products/{product_code}/electricity-tariffs/{tariff_code}/standard-unit-rates/?period_from={period_from}&period_to={period_to}"
+        url = f"{URL}/v1/products/{product_code}/electricity-tariffs/{tariff_code}/standard-unit-rates/?period_from={period_from}&period_to={period_to}"
         response = requests.get(url)
 
         if response.status_code == 404:
@@ -127,7 +147,7 @@ class OctopusPricesClient:
 
         data_json = response.json()
 
-        logging.debug(f"Full Octopus Agile data: {data_json}")
+        logging.debug(f"Full prices data: {data_json}")
 
         if data_json == None:
             raise ValueError("No data returned from the Octopus Agile API, this is an Octopus API issue, try re-running this in a few minutes")
@@ -139,7 +159,9 @@ class OctopusPricesClient:
 
         return data_json_results 
 
-    def get_prices_for_users_tariff_and_product(self, product_prefix: str, date_from: datetime, date_to: datetime) -> list[Price]:
+    def get_prices_for_users_tariff_and_product(
+            self, product_prefix: str, date_from: datetime, date_to: datetime, is_export: bool
+        ) -> list[Price]:
         """
         What this does
         ---
@@ -167,9 +189,12 @@ class OctopusPricesClient:
         if (today_date.hour >= 1):
             logging.warning(f"current hour is {today_date.hour}, data includes historical prices, these wont be included in todays run.")
 
-        tariff_code, product_code = self.tariff_and_product_client.get_accounts_tariff_and_matched_product_code(product_code_prefix=product_prefix)
+        matched_tariff, product_code = self.tariff_and_product_client.get_accounts_tariff_and_matched_product_code(
+            product_code_prefix=product_prefix,
+            is_export=is_export
+        )
 
-        data_json_results = self.get_prices(product_code, tariff_code, date_from, date_to)
+        data_json_results = self.get_prices(product_code, matched_tariff, date_from, date_to)
 
         return [Price(
             value=float(hh_period["value_inc_vat"]),

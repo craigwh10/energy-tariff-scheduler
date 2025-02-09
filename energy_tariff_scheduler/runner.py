@@ -7,6 +7,7 @@ from typing import Callable, Optional, Type
 import time
 
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.jobstores.memory import MemoryJobStore
 
 """
 Current tariff support:
@@ -37,13 +38,13 @@ class ApScheduleExecutorsFilter(logging.Filter):
             return False
         return True
      
-logging.getLogger("apscheduler.scheduler").addFilter(
-    ApScheduleSchedulerFilter()
-)
+# logging.getLogger("apscheduler.scheduler").addFilter(
+#     ApScheduleSchedulerFilter()
+# )
 
-logging.getLogger("apscheduler.executors.default").addFilter(
-    ApScheduleExecutorsFilter()
-)
+# logging.getLogger("apscheduler.executors.default").addFilter(
+#     ApScheduleExecutorsFilter()
+# )
 
 def run_octopus_go_tariff_schedule(
         api_key: str,
@@ -52,6 +53,7 @@ def run_octopus_go_tariff_schedule(
         action_when_expensive: Callable[[Optional[Price]], None],
         pricing_strategy: Optional[Type[PricingStrategy]] = DefaultPricingStrategy,
         is_intelligent: bool = False,
+        is_export: bool = False
 ):
     """
     Runs a schedule with half hourly jobs based on the Octopus Go tariff prices.
@@ -63,6 +65,7 @@ def run_octopus_go_tariff_schedule(
         action_when_expensive: Action to execute when the price is in expensive period of go.
         pricing_strategy: Custom pricing strategy to handle the prices.
         is_intelligent: If the tariff is intelligent or regular go.
+        is_export: Whether to schedule based on your export or import tariff.
     """
     continuous_scheduler = BackgroundScheduler()
     cron_scheduler = BackgroundScheduler()
@@ -70,12 +73,13 @@ def run_octopus_go_tariff_schedule(
     def set_daily_schedule() -> list[str]:
         # Go: 00:30 - 05:30, Intelligent: 11:30 - 5:30, people aren't encouraged to choose price amounts here as they're fixed*.
         # I have heard that intelligent can sometimes give more, but it's rare, not handling this.
-        prices_to_include_for_go = 2 if is_intelligent else 1
+        considered_price_count_for_go = 2 if is_intelligent else 1
         config = OctopusGoScheduleConfig(
-            prices_to_include=prices_to_include_for_go,
+            considered_price_count=considered_price_count_for_go,
             action_when_cheap=action_when_cheap,
             action_when_expensive=action_when_expensive,
-            is_intelligent=is_intelligent
+            is_intelligent=is_intelligent,
+            is_export=is_export
         ).add_custom_pricing_strategy(
             pricing_strategy
         )
@@ -109,7 +113,8 @@ def run_octopus_go_tariff_schedule(
         func=set_daily_schedule,
         trigger="cron",
         hour=0,
-        minute=0
+        minute=0,
+        jobstore="continuous-go"
     )
     set_daily_schedule()
 
@@ -128,10 +133,11 @@ def run_octopus_go_tariff_schedule(
 def run_octopus_agile_tariff_schedule(
         api_key: str,
         account_number: str,
-        prices_to_include: int | Callable[[list[Price]], int],
+        considered_price_count: int | Callable[[list[Price]], int],
         action_when_cheap: Callable[[Optional[Price]], None],
         action_when_expensive: Callable[[Optional[Price]], None],
         pricing_strategy: Optional[Type[PricingStrategy]] = DefaultPricingStrategy,
+        is_export: bool = False
     ):
     """
     Runs a schedule with half hourly jobs based on the Octopus Agile tariff prices.
@@ -139,12 +145,13 @@ def run_octopus_agile_tariff_schedule(
     Args:
         api_key: Octopus Energy API key.
         account_number: Octopus Energy account number.
-        prices_to_include: The number of prices to include or a callable that determines the number dynamically from available prices.
+        considered_price_count: The number of prices to include or a callable that determines the number dynamically from available prices.
         action_when_cheap: Action to execute when the price is considered cheap.
         action_when_expensive: Action to execute when the price is considered expensive.
         pricing_strategy: Custom pricing strategy to handle the prices.
+        is_export: Whether to schedule based on your export or import tariff.
         
-    Example Custom Pricing Strategy (Optional - default is just picking the cheapest `prices_to_include` prices):
+    Example Custom Pricing Strategy (Optional - default is just picking the cheapest `considered_price_count` prices):
     ```python
     from custom_sms import SMS
     import requests
@@ -176,23 +183,34 @@ def run_octopus_agile_tariff_schedule(
         requests.get("http://<shelly_ip>/relay/0?turn=off")
 
     runner.run_octopus_agile_tariff_schedule(
-        prices_to_include=5, # 5 opportunties to trigger "action_when_cheap"
+        considered_price_count=5, # 5 opportunties to trigger "action_when_cheap"
         action_when_cheap=switch_shelly_on_and_alert,
         action_when_expensive=switch_shelly_off_and_alert,
         pricing_strategy=CustomPricingStrategy,
         api_key="api_key (BROUGHT IN SAFELY)",
         account_number="account_number (BROUGHT IN SAFELY)"
+        is_export=False
     )
     ```
     """
     continuous_scheduler = BackgroundScheduler()
+    continuous_scheduler.add_jobstore(
+        MemoryJobStore(),
+        alias="continuous-agile"
+    )
+
     cron_scheduler = BackgroundScheduler()
+    cron_scheduler.add_jobstore(
+        MemoryJobStore(),
+        alias="cron-agile"
+    )
 
     def set_daily_schedule() -> list[str]:
         config = OctopusAgileScheduleConfig(
-            prices_to_include=prices_to_include,
+            considered_price_count=considered_price_count,
             action_when_cheap=action_when_cheap,
             action_when_expensive=action_when_expensive,
+            is_export=is_export
         ).add_custom_pricing_strategy(
             pricing_strategy
         )
@@ -226,7 +244,8 @@ def run_octopus_agile_tariff_schedule(
         func=set_daily_schedule,
         trigger="cron",
         hour=0,
-        minute=0
+        minute=0,
+        jobstore="cron-agile"
     )
 
     set_daily_schedule()

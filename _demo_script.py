@@ -30,7 +30,7 @@ class CustomPriceStrategy(PricingStrategy):
         return
 
 runner.run_octopus_agile_tariff_schedule(
-    prices_to_include=custom_price,
+    considered_price_count=custom_price,
     action_when_cheap=switch_shelly_on_and_alert,
     action_when_expensive=switch_shelly_off_and_alert,
     pricing_strategy=CustomPriceStrategy,

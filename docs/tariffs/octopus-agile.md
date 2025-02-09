@@ -4,7 +4,7 @@ Octopus Agile is an Octopus tariff which allows you to plan your usage for your 
 
 ## Configuration
 
-- `prices_to_include` is the number of the cheapest half hourly periods that you want to include
+- `considered_price_count` is the number of the cheapest half hourly periods that you want to include
     * this can be a function (as defined in [custom prices to include](../advanced/custom-prices-to-include.md))
     * or simply just an integer value between `0` and `46` ( a full day 0:00-23:00)
 - `action_when_cheap` is your function that is called when the half hourly period is among the cheapest
@@ -39,7 +39,7 @@ def action_when_expensive(price: Price)
     print("expensive", price.value)
 
 runner.run_octopus_agile_tariff_schedule(
-  prices_to_include=12,
+  considered_price_count=12,
   action_when_cheap=action_when_cheap,
   action_when_expensive=action_when_expensive,
   api_key="YOUR-API-KEY",
